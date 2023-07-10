@@ -1,31 +1,40 @@
 import { useState } from "react";
+import Header from "../components/header";
+import OverviewMatrix from "../components/overviewMatrix";
 import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
 
 export default function Home() {
   const [selectedGraph, setSelectedGraph] = useState(1);
   return (
-    <main>
-      <div className="flex">
-        <ul className="h-[600px] overflow-auto">
-          {Graph.graphs.map((x) => (
-            <li
-              className="p-2 cursor-pointer	hover:bg-sky-700"
-              onClick={() => setSelectedGraph(x.id)}
-            >
-              <p>graph id: {x.id}</p>
-              <p>number of node: {x.num_nodes}</p>
-              <p>number of edges: {x.num_edges}</p>
-            </li>
-          ))}
-        </ul>
-        <div className="w-full p-10">
-          <div>
-            <p>selectedGraphID: {selectedGraph}</p>
-            <p>number of node: {Graph.graphs[selectedGraph - 1].num_nodes}</p>
-            <p>number of edges: {Graph.graphs[selectedGraph - 1].num_edges}</p>
+    <main className="h-full">
+      <Header />
+      <div className="flex h-full">
+        <div className="w-1/2 m-2 h-full">
+          <h1 className="text-xl">Overview</h1>
+          <div className="overflow-auto h-full">
+            {Graph.graphs.slice(0, 30).map((x) => (
+              <div
+                className="w-1/2 hover:bg-sky-700 inline-block"
+                onClick={() => setSelectedGraph(x.id)}
+              >
+                <OverviewMatrix data={x}></OverviewMatrix>
+              </div>
+            ))}
           </div>
-          <Matrix data={Graph.graphs[selectedGraph - 1]}></Matrix>
+        </div>
+        <div className="w-1/2 m-2">
+          <h1 className="text-xl">Detail</h1>
+          <div className="w-full">
+            <div>
+              <p>selectedGraphID: {selectedGraph}</p>
+              <p>number of node: {Graph.graphs[selectedGraph - 1].num_nodes}</p>
+              <p>
+                number of edges: {Graph.graphs[selectedGraph - 1].num_edges}
+              </p>
+            </div>
+            <Matrix data={Graph.graphs[selectedGraph - 1]}></Matrix>
+          </div>
         </div>
       </div>
     </main>

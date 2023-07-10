@@ -16,6 +16,17 @@
   }
 }
 
+@layer components {
+  #__next {
+    @apply h-full;
+  }
+  html,
+  body {
+    overflow: hidden;
+    @apply h-full;
+  }
+}
+
 body {
   /*
   color: rgb(var(--foreground-rgb));
