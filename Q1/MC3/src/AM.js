@@ -11,8 +11,7 @@ export function AM() {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
-  function update(graph) {
-    console.log(graph);
+  function update(graph, oceanNodes) {
     const title = svg
       .append("g")
       .attr("transform", `translate(${width / 2}, ${margin.top / 2})`)
@@ -52,11 +51,18 @@ export function AM() {
     let matrix = [];
     nodes.forEach((src) => {
       nodes.forEach((trg) => {
-        matrix.push({ source: src.id, target: trg.id, value: -1 });
+        matrix.push({
+          source: src.id,
+          target: trg.id,
+          value: -1,
+          ocean: false,
+        });
       });
     });
     nodes.forEach((n, i) => {
       matrix[i * nodes.length + i].value = n.is_source;
+      matrix[i * nodes.length + i].ocean = oceanNodes.includes(n.id);
+      console.log(oceanNodes.includes(n.id));
     });
     links.forEach((l) => {
       let src = nodes.findIndex((n) => n.id === l.source);
@@ -84,7 +90,9 @@ export function AM() {
           : d.value === 0
           ? "yellow"
           : "white"
-      );
+      )
+      .attr("stroke", (d) => (d.ocean ? "black" : "none"))
+      .attr("stroke-width", (d) => (d.ocean ? 8 : 0));
   }
   return {
     element: svg.node(),
