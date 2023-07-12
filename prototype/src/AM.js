@@ -104,10 +104,10 @@
 import * as d3 from "d3";
 
 export function AM() {
-  const margin = { top: 70, right: 20, bottom: 20, left: 70 };
+  const margin = { top: 80, right: 20, bottom: 20, left: 40 };
   const [width, height] = [
     600 - margin.left - margin.right,
-    300 - margin.top - margin.bottom,
+    320 - margin.top - margin.bottom,
   ];
   const svg = d3
     .create("svg")
@@ -117,10 +117,28 @@ export function AM() {
   function update(graph, oceanNodes) {
     const title = svg
       .append("g")
-      .attr("transform", `translate(${width / 2}, ${margin.top / 2})`)
+      .attr("transform", `translate(${margin.left}, ${20})`)
       .append("text")
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "start")
+      .attr("font-size", "16px")
       .text(`Graph ID: ${graph.id}`);
+
+    const labels = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left}, ${margin.top / 2})`);
+
+    labels
+      .append("text")
+      .text("x: targets")
+      .attr("text-anchor", "end")
+      .attr("font-size", "16px")
+      .attr("transform", `translate(${0}, ${10})`);
+    labels
+      .append("text")
+      .text("y: sources")
+      .attr("text-anchor", "start")
+      .attr("font-size", "16px")
+      .attr("transform", `translate(${80}, ${40})`);
 
     const container = svg
       .append("g")
@@ -133,13 +151,13 @@ export function AM() {
 
     const xScale = d3
       .scaleBand()
-      .padding(0.01)
-      .domain(targetNodes.map((d) => d.id))
+      .padding(0.02)
+      .domain(targetNodes.map((_, i) => i + 1))
       .range([0, width]);
     const yScale = d3
       .scaleBand()
-      .padding(0.01)
-      .domain(sourceNodes.map((d) => d.id))
+      .padding(0.02)
+      .domain(sourceNodes.map((_, i) => i + 1))
       .range([0, height]);
 
     const xAxis = container
@@ -154,13 +172,15 @@ export function AM() {
       .call(d3.axisLeft(yScale));
 
     let matrix = [];
-    sourceNodes.forEach((s) => {
-      targetNodes.forEach((t) => {
+    sourceNodes.forEach((s, i) => {
+      targetNodes.forEach((t, j) => {
         matrix.push({
           source: s.id,
           target: t.id,
           value: 0,
           ocean: false,
+          x: xScale(j + 1),
+          y: yScale(i + 1),
         });
       });
     });
@@ -176,23 +196,22 @@ export function AM() {
       let trg = targetNodes.findIndex((n) => n.id === l.target);
       matrix[src * targetNodes.length + trg].value = l.type;
     });
-    console.log(matrix);
 
     const cells = container
       .append("g")
       .selectAll("rect")
       .data(matrix)
       .join("rect")
-      .attr("x", (d) => xScale(d.target))
-      .attr("y", (d) => yScale(d.source))
+      .attr("x", (d) => d.x)
+      .attr("y", (d) => d.y)
       .attr("width", xScale.bandwidth())
       .attr("height", yScale.bandwidth())
       .attr("fill", (d) =>
         d.value === "Beneficial Owner"
-          ? "red"
+          ? d3.schemeTableau10[2]
           : d.value === "Company Contacts"
-          ? "blue"
-          : "white"
+          ? d3.schemeTableau10[0]
+          : "whitesmoke"
       );
   }
   return {

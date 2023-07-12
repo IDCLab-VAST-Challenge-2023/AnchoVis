@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export function BP() {
-  const margin = { top: 70, right: 20, bottom: 20, left: 70 };
+  const margin = { top: 50, right: 20, bottom: 20, left: 20 };
   const [width, height] = [
     600 - margin.left - margin.right,
     300 - margin.top - margin.bottom,
@@ -45,7 +45,7 @@ export function BP() {
       .join("circle")
       .attr("cx", (d) => sourceScale(d.id))
       .attr("cy", 0)
-      .attr("r", 3)
+      .attr("r", 5)
       .attr("fill", d3.schemeTableau10[0]);
 
     const trgCircles = container
@@ -55,7 +55,7 @@ export function BP() {
       .join("circle")
       .attr("cx", (d) => targetScale(d.id))
       .attr("cy", height)
-      .attr("r", 3)
+      .attr("r", 5)
       .attr("fill", d3.schemeTableau10[1]);
 
     const linkPath = container
@@ -70,7 +70,8 @@ export function BP() {
       })
       .attr("stroke", (l) => (l.type === "Beneficial Owner" ? "red" : "blue"))
       .attr("stroke-width", 2)
-      .attr("fill", "none");
+      .attr("fill", "none")
+      .attr("opacity", 0.5);
   }
   return {
     element: svg.node(),
