@@ -26,7 +26,12 @@
     height: 100vh;
   }
 }
-
+.block {
+  background: white;
+  border-radius: 2px;
+  padding: 0.5rem;
+  padding-top: 0px;
+}
 body {
   /*
   color: rgb(var(--foreground-rgb));
@@ -37,4 +42,22 @@ body {
     )
     rgb(var(--background-start-rgb));
   */
+}
+th {
+  min-width: 100px;
+  min-height: 50px;
+}
+.table-container {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+table {
+  position: relative;
+}
+
+.fixed {
+  position: sticky;
+  left: 0;
+  background: white; /* Ensure the background is white so content under it doesn't show through */
 }
