@@ -1,9 +1,9 @@
 import { Chart } from "react-chartjs-2";
-import { Chart as ChartJS, LinearScale, Tooltip } from "chart.js";
+import { Chart as ChartJS, LinearScale } from "chart.js";
 import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 
 export default function Matrix({ data }) {
-  ChartJS.register(MatrixController, MatrixElement, LinearScale, Tooltip);
+  ChartJS.register(MatrixController, MatrixElement, LinearScale);
   let src = {};
   let trg = {};
   let linkType = {};
@@ -50,19 +50,19 @@ export default function Matrix({ data }) {
               context.dataset.data[context.dataIndex].type ===
               "Beneficial Owner"
             ) {
-              return "red";
+              return "#e15759";
             } else if (
               context.dataset.data[context.dataIndex].type ===
               "Company Contacts"
             ) {
-              return "blue";
+              return "#4e79a7";
             }
-            return "gray";
+            return "#bab0ac";
           },
           width: ({ chart }) =>
-            (chart.chartArea || {}).width / Math.min(trgList.length, 20) - 1,
+            (chart.chartArea || {}).width / Math.min(trgList.length, 20) + 10,
           height: ({ chart }) =>
-            (chart.chartArea || {}).height / Math.min(srcList.length, 20) - 1,
+            (chart.chartArea || {}).height / Math.min(srcList.length, 20) + 10,
         },
       ],
     },
@@ -70,22 +70,14 @@ export default function Matrix({ data }) {
       plugins: {
         legend: false,
         tooltip: {
-          displayColors: false,
-          callbacks: {
-            title() {
-              return "";
-            },
-            label(context) {
-              const v = context.dataset.data[context.dataIndex];
-              return ["src: " + v.src, "trg: " + v.trg, "type: " + v.type];
-            },
-          },
+          enabled: false,
         },
       },
       scales: {
         x: {
           position: "top",
           ticks: {
+            display: false,
             stepSize: 1,
           },
           grid: {
@@ -95,6 +87,7 @@ export default function Matrix({ data }) {
         y: {
           offset: true,
           ticks: {
+            display: false,
             stepSize: 1,
           },
           grid: {
@@ -111,6 +104,7 @@ export default function Matrix({ data }) {
         type={config.type}
         data={config.data}
         options={config.options}
+        className="p-1"
       ></Chart>
     </>
   );

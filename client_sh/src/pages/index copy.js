@@ -5,6 +5,7 @@ import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
 
 export default function Home() {
+  const numberOfOverview = 50;
   const [selectedGraph, setSelectedGraph] = useState(1);
   return (
     <main className="h-full">
@@ -13,7 +14,7 @@ export default function Home() {
         <div className="w-1/2 m-2 h-full">
           <h1 className="text-xl">Overview</h1>
           <div className="overflow-auto h-full">
-            {Graph.graphs.slice(0, 30).map((x) => (
+            {Graph.graphs.slice(0, numberOfOverview).map((x) => (
               <div
                 className="w-1/2 hover:bg-sky-700 inline-block"
                 onClick={() => setSelectedGraph(x.id)}

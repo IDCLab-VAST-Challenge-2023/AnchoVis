@@ -18,12 +18,12 @@
 
 @layer components {
   #__next {
-    @apply h-full;
+    height: 100vh;
   }
   html,
   body {
     overflow: hidden;
-    @apply h-full;
+    height: 100vh;
   }
 }
 
