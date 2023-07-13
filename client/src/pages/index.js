@@ -5,7 +5,7 @@ import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
 import DataTable from "@/components/datatable";
 export default function Home() {
-  const [selectedGraph, setSelectedGraph] = useState(5);
+  const [selectedGraph, setSelectedGraph] = useState(3);
   return (
     <main className="h-full bg-gray-100">
       <div className="block">
