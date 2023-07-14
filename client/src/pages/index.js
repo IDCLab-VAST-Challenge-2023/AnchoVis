@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "../components/header";
+import { useRouter } from "next/router";
 import OverviewMatrix from "../components/overviewMatrix";
 import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
@@ -32,8 +32,7 @@ export default function Home() {
                 number of edges: {Graph.graphs[selectedGraph - 1].num_edges}
               </p>
             </div>
-            <Matrix data={Graph.graphs[selectedGraph - 1]}></Matrix>
-          </div>
+          ))}
         </div>
       </div>
     </main>

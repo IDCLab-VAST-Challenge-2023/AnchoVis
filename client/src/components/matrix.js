@@ -25,8 +25,8 @@ export default function Matrix({ data }) {
   srcList.sort((a, b) => b[1] - a[1]);
   trgList.sort((a, b) => b[1] - a[1]);
   let matrixValue = [];
-  for (let i = 0; i < Math.min(trgList.length, 20); i++) {
-    for (let j = 0; j < Math.min(srcList.length, 20); j++) {
+  for (let i = 0; i < Math.min(trgList.length, 40); i++) {
+    for (let j = 0; j < Math.min(srcList.length, 40); j++) {
       matrixValue.push({
         x: i + 1,
         y: j + 1,
@@ -50,25 +50,25 @@ export default function Matrix({ data }) {
               context.dataset.data[context.dataIndex].type ===
               "Beneficial Owner"
             ) {
-              return "red";
+              return "#e15759";
             } else if (
               context.dataset.data[context.dataIndex].type ===
               "Company Contacts"
             ) {
-              return "blue";
+              return "#4e79a7";
             }
-            return "gray";
+            return "#bab0ac";
           },
           width: ({ chart }) =>
-            (chart.chartArea || {}).width / Math.min(trgList.length, 20) - 1,
+            (chart.chartArea || {}).width / Math.min(trgList.length, 40) - 1,
           height: ({ chart }) =>
-            (chart.chartArea || {}).height / Math.min(srcList.length, 20) - 1,
+            (chart.chartArea || {}).height / Math.min(srcList.length, 40) - 1,
         },
       ],
     },
     options: {
       plugins: {
-        legend: false,
+        legend: true,
         tooltip: {
           displayColors: false,
           callbacks: {
