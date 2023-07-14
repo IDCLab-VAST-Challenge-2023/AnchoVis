@@ -50,14 +50,14 @@ export default function Matrix({ data }) {
               context.dataset.data[context.dataIndex].type ===
               "Beneficial Owner"
             ) {
-              return "red";
+              return "#e15759";
             } else if (
               context.dataset.data[context.dataIndex].type ===
               "Company Contacts"
             ) {
-              return "blue";
+              return "#4e79a7";
             }
-            return "gray";
+            return "#bab0ac";
           },
           width: ({ chart }) =>
             (chart.chartArea || {}).width / Math.min(trgList.length, 20) + 10,
