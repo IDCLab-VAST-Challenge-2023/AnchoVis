@@ -5,7 +5,6 @@ import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
 import DataTable from "@/components/datatable";
 export default function Home() {
-<<<<<<< HEAD
   const [selectedGraph, setSelectedGraph] = useState(3);
   return (
     <main className="h-full bg-gray-100">
@@ -32,27 +31,8 @@ export default function Home() {
               <p>
                 number of edges: {Graph.graphs[selectedGraph - 1].num_edges}
               </p>
-=======
-  const router = useRouter();
-  const numberOfOverview = 50;
-  const [selectedGraph, setSelectedGraph] = useState(1);
-  return (
-    <main className="h-full">
-      <div className="p-4 h-[calc(100vh-4rem)]">
-        <h1 className="text-2xl ml-4">Overview</h1>
-        <div className="overflow-auto h-full pb-8">
-          {Graph.graphs.slice(0, numberOfOverview).map((x) => (
-            <div
-              className="w-1/4 hover:bg-sky-700 inline-block"
-              onClick={() => {
-                setSelectedGraph(x.id);
-                router.push("/" + x.id);
-              }}
-            >
-              <OverviewMatrix data={x}></OverviewMatrix>
->>>>>>> main
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </main>
