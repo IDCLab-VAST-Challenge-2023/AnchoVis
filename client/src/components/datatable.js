@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 export default function DataTable({ data, selectGraph, setSelectGraph }) {
   return (
@@ -37,9 +38,11 @@ export default function DataTable({ data, selectGraph, setSelectGraph }) {
                     Max similarity
                   </div>
                 </td>
-                {data.map((x, i) => (
-                    <td className="whitespace-nowrap px-6 py-4" key={i}>unknown</td>
-                  ))
+                {data.map((x, i) => {
+                    let maxSimilarity = 0
+                    x.graph.nodes.forEach((y) => { if (y.similarity > maxSimilarity) maxSimilarity = y.similarity })
+                    return <td className="whitespace-nowrap px-6 py-4" key={i}>{maxSimilarity}</td>
+                  })
                 }
               </tr>
               <tr className="border-b dark:border-neutral-500">
