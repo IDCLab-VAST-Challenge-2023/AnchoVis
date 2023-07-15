@@ -3,7 +3,7 @@ import Header from "../components/header";
 import OverviewMatrix from "../components/overviewMatrix";
 import Matrix from "../components/matrix";
 import Graph from "../data/graphs.json";
-import DataTable from "@/components/datatable";
+import DataTable from "@/components/dataTable";
 export default function Home() {
   const [selectedGraph, setSelectedGraph] = useState(3);
   return (

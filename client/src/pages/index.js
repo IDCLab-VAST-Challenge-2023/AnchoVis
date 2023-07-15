@@ -16,7 +16,7 @@ export default function Home() {
           </div>
           <DataTable data={Graph.graphs.slice(0, 100)} selectedGraph={selectedGraph} setSelectGraph={setSelectedGraph}></DataTable>
         </div>
-        <div className="flex flex-col block m-2 h-fit p-10">
+        <div className="flex flex-col block m-2 h-full p-10">
           <div className="w-full h-fit border-b-[1px] flex items-center text-xl">
             <h1 className="text-xl">Detail</h1>
           </div>

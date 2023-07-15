@@ -2,84 +2,121 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function detailTable({ data }) {
+  console.log(data)
+  const maxSrcSize = 200;
+  const maxTrgSize = 200;
+  const srcInfo = {};
+  const src = {};
+  const trg = {};
+  const linkType = {};
+  for (const node of data.graph.nodes) {
+    srcInfo[node.id] = node;
+  }
+  for (const link of data.graph.links) {
+    if (link.source in src) src[link.source] += 1;
+    else src[link.source] = 1;
+    if (link.target in trg) trg[link.target] += 1;
+    else trg[link.target] = 1;
+    linkType[[link.source, link.target]] = link.type;
+  }
+  const srcList = [];
+  const trgList = [];
+  for (const s in src) {
+    srcList.push([s, src[s]]);
+  }
+  for (const t in trg) {
+    trgList.push([t, trg[t]]);
+  }
+  srcList.sort((a, b) => b[1] - a[1]);
+  trgList.sort((a, b) => b[1] - a[1]);
+  const matrixValue = [];
+  for (let i = 0; i < Math.min(srcList.length, maxTrgSize); i++) {
+    const tmp = [];
+    for (let j = 0; j < Math.min(trgList.length, maxSrcSize); j++) {
+      tmp.push({
+        type: linkType[[srcList[i][0], trgList[j][0]]],
+        src: srcList[i][0],
+        trg: trgList[j][0],
+      });
+    }
+    matrixValue.push(tmp);
+  }
+  console.log(matrixValue)
   return(
     <div className="flex flex-col overflow-y-auto">
       <div className="sm:-mx-6 lg:-mx-8">
         <div className="inline-block py-2 sm:px-6 lg:px-8">
           <table className="text-center text-sm font-light">
             <thead className="border-b font-medium dark:border-neutral-500">
-              <tr>
-                <th scope="col" className="sticky left-0 bg-white z-10">
+              <tr key="column_row">
+                <th scope="col" className="sticky left-0 bg-white z-10" key="sourceID">
                   <div className="px-6 py-4 w-full border-r">Source ID</div>
                 </th>
-                <th scope="col" className="px-6 py-4">
+                <th scope="col" className="px-6 py-4" key="fishing">
                   Fishing
                 </th>
-                <th scope="col" className="px-6 py-4">
+                <th scope="col" className="px-6 py-4" key="revenue">
                   Revenue
                 </th>
-                <th scope="col" className="px-6 py-4">
+                <th scope="col" className="px-6 py-4" key="similarity">
                   Similarity
                 </th>
-                <th scope="col" className="px-6 py-4">
+                <th scope="col" className="px-6 py-4" key="country">
                   Country
                 </th>
+                {
+                  trgList.slice(0, maxTrgSize).map((x, i) => (
+                    <th scope="col" className="px-6 py-4" key="country">
+                      {x[0]}
+                    </th>
+                  ))
+                }
               </tr>
             </thead>
             <tbody>
               {
-                data.graph.nodes.map((x, i) => (
-                  <tr className="border-b dark:border-neutral-500">
-                    <td className="whitespace-nowrap font-medium fixed ticky left-0">
-                      <div className="px-6 py-4 w-full border-r">{x.id}</div>
-                    </td>
-                    <td scope="col" className="px-6 py-4">
+                srcList.slice(0, maxSrcSize).map((x, i) => {
+                  x = srcInfo[x[0]]
+                  return(
+                    <tr className="border-b dark:border-neutral-500" key={`row${i}`}>
+                      <td className="whitespace-nowrap font-medium fixed ticky left-0" key={x.id}>
+                        <div className="px-6 py-4 w-full border-r">{x.id}</div>
+                      </td>
+                      <td scope="col" className="px-6 py-4" key={`is_ocean${i}`}>
+                        {
+                          x.is_ocean ?
+                            <FontAwesomeIcon icon={faFish} />
+                          :
+                            <FontAwesomeIcon icon={faXmark} />
+                        }
+                      </td>
+                      <td scope="col" className="px-6 py-4" key={`total_revenue${i}`}>
+                        {x.total_revenue}
+                      </td>
+                      <td scope="col" className="px-6 py-4" key={`similarity${i}`}>
+                        {x.similarity}
+                      </td>
+                      <td scope="col" className="px-6 py-4" key={`country${i}`}>
+                        {x.country}
+                      </td>
                       {
-                        x.is_ocean ?
-                          <FontAwesomeIcon icon={faFish} />
-                        :
-                          <FontAwesomeIcon icon={faXmark} />
+                        matrixValue[i].map((y, j) => {
+                          function getColor(type) {
+                            if (type === "Beneficial Owner") return "#e15759";
+                            else if (type === "Company Contacts") return "#4e79a7";
+                            else return "#bab0ac";
+                          }
+                          return(
+                            <td scope="col" className="px-6 py-4" style={{backgroundColor: getColor(y.type)}} key={`matrix${j}`}>
+                              {y.type}
+                            </td>
+                          )
+                          })
                       }
-                    </td>
-                    <td scope="col" className="px-6 py-4">
-                      {x.total_revenue}
-                    </td>
-                    <td scope="col" className="px-6 py-4">
-                      {x.similarity}
-                    </td>
-                    <td scope="col" className="px-6 py-4">
-                      {x.country}
-                    </td>
-                  </tr>
-                ))
+                    </tr>
+                  );
+                })
               }
-              <tr className="border-b dark:border-neutral-500">
-                <td className="whitespace-nowrap font-medium fixed ticky left-0">
-                  <div className="px-6 py-4 w-full border-r">Fishing</div>
-                </td>
-              </tr>
-              <tr className="border-b dark:border-neutral-500">
-                <td className="whitespace-nowrap font-medium fixed">
-                  <div className="px-6 py-4 w-full border-r">
-                    Max similarity
-                  </div>
-                </td>
-              </tr>
-              <tr className="border-b dark:border-neutral-500">
-                <td className="whitespace-nowrap font-medium fixed">
-                  <div className="px-6 py-4 w-full border-r">Revenue</div>
-                </td>
-              </tr>
-              <tr className="border-b dark:border-neutral-500">
-                <td className="whitespace-nowrap font-medium fixed">
-                  <div className="px-6 py-4 w-full border-r"># of Nodes</div>
-                </td>
-              </tr>
-              <tr className="border-b dark:border-neutral-500">
-                <td className="whitespace-nowrap font-medium fixed">
-                  <div className="px-6 py-4 w-full border-r"># of Links</div>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
