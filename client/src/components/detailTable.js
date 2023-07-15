@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-export default function DataTable({ data, selectGraph, setSelectGraph }) {
-  return (
+export default function detailTable({ data }) {
+  return(
     <div className="flex flex-col overflow-y-auto">
       <div className="sm:-mx-6 lg:-mx-8">
         <div className="inline-block py-2 sm:px-6 lg:px-8">
@@ -10,26 +10,53 @@ export default function DataTable({ data, selectGraph, setSelectGraph }) {
             <thead className="border-b font-medium dark:border-neutral-500">
               <tr>
                 <th scope="col" className="sticky left-0 bg-white z-10">
-                  <div className="px-6 py-4 w-full border-r">Network ID</div>
+                  <div className="px-6 py-4 w-full border-r">Source ID</div>
                 </th>
-                {data.map((x, i) => (
-                  <th scope="col" className="px-6 py-4 cursor-pointer hover:bg-slate-400" key={i} onClick={() => setSelectGraph(x.id)}>
-                    {x.id}
-                  </th>
-                ))}
+                <th scope="col" className="px-6 py-4">
+                  Fishing
+                </th>
+                <th scope="col" className="px-6 py-4">
+                  Revenue
+                </th>
+                <th scope="col" className="px-6 py-4">
+                  Similarity
+                </th>
+                <th scope="col" className="px-6 py-4">
+                  Country
+                </th>
               </tr>
             </thead>
             <tbody>
+              {
+                data.graph.nodes.map((x, i) => (
+                  <tr className="border-b dark:border-neutral-500">
+                    <td className="whitespace-nowrap font-medium fixed ticky left-0">
+                      <div className="px-6 py-4 w-full border-r">{x.id}</div>
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      {
+                        x.is_ocean ?
+                          <FontAwesomeIcon icon={faFish} />
+                        :
+                          <FontAwesomeIcon icon={faXmark} />
+                      }
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      {x.total_revenue}
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      {x.similarity}
+                    </td>
+                    <td scope="col" className="px-6 py-4">
+                      {x.country}
+                    </td>
+                  </tr>
+                ))
+              }
               <tr className="border-b dark:border-neutral-500">
                 <td className="whitespace-nowrap font-medium fixed ticky left-0">
                   <div className="px-6 py-4 w-full border-r">Fishing</div>
                 </td>
-                {data.map((x, i) => (
-                  <td scope="col" className="px-6 py-4" key={i}>
-                    <FontAwesomeIcon icon={faFish} />{" "}
-                    <FontAwesomeIcon icon={faXmark} /> {x.num_ocean_nodes}
-                  </td>
-                ))}
               </tr>
               <tr className="border-b dark:border-neutral-500">
                 <td className="whitespace-nowrap font-medium fixed">
@@ -37,37 +64,21 @@ export default function DataTable({ data, selectGraph, setSelectGraph }) {
                     Max similarity
                   </div>
                 </td>
-                {data.map((x, i) => (
-                    <td className="whitespace-nowrap px-6 py-4" key={i}>unknown</td>
-                  ))
-                }
               </tr>
               <tr className="border-b dark:border-neutral-500">
                 <td className="whitespace-nowrap font-medium fixed">
                   <div className="px-6 py-4 w-full border-r">Revenue</div>
                 </td>
-                {data.map((x, i) => (
-                    <td className="whitespace-nowrap px-6 py-4" key={i}>{x.average_revenue}</td>
-                  ))
-                }
               </tr>
               <tr className="border-b dark:border-neutral-500">
                 <td className="whitespace-nowrap font-medium fixed">
                   <div className="px-6 py-4 w-full border-r"># of Nodes</div>
                 </td>
-                {data.map((x, i) => (
-                    <td className="whitespace-nowrap px-6 py-4" key={i}>{x.num_nodes}</td>
-                  ))
-                }
               </tr>
               <tr className="border-b dark:border-neutral-500">
                 <td className="whitespace-nowrap font-medium fixed">
                   <div className="px-6 py-4 w-full border-r"># of Links</div>
                 </td>
-                {data.map((x, i) => (
-                    <td className="whitespace-nowrap px-6 py-4" key={i}>{x.num_links}</td>
-                  ))
-                }
               </tr>
             </tbody>
           </table>
