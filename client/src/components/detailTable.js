@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-export default function detailTable({ data }) {
+export default function detailTable({ data, filter }) {
+  console.log(data)
   const maxSrcSize = 200;
   const maxTrgSize = 200;
   const srcInfo = {};
@@ -18,8 +19,8 @@ export default function detailTable({ data }) {
     else trg[link.target] = 1;
     linkType[[link.source, link.target]] = link.type;
   }
-  const srcList = [];
-  const trgList = [];
+  let srcList = [];
+  let trgList = [];
   for (const s in src) {
     srcList.push([s, src[s]]);
   }
@@ -28,6 +29,8 @@ export default function detailTable({ data }) {
   }
   srcList.sort((a, b) => b[1] - a[1]);
   trgList.sort((a, b) => b[1] - a[1]);
+  srcList = srcList.filter((x) => x[1] > 0);
+  trgList = trgList.filter((x) => x[1] > 0);
   const matrixValue = [];
   for (let i = 0; i < Math.min(srcList.length, maxTrgSize); i++) {
     const tmp = [];
@@ -73,7 +76,11 @@ export default function detailTable({ data }) {
             </thead>
             <tbody>
               {
-                srcList.slice(0, maxSrcSize).map((x, i) => {
+                srcList.slice(0, maxSrcSize)
+                .filter(x => srcInfo[x[0]].is_ocean >= 1 * filter.isFish)
+                .filter(x => srcInfo[x[0]].similarity >= filter.minSimilarity)
+                .filter(x => srcInfo[x[0]].total_revenue >= filter.minRevenue)
+                .map((x, i) => {
                   x = srcInfo[x[0]]
                   return(
                     <tr className="border-b dark:border-neutral-500" key={`row${i}`}>

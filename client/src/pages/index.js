@@ -11,6 +11,11 @@ export default function Home() {
     minSimilarity: 0,
     minRevenue: 0,
   });
+  const [sourceFilter, setSourceFilter] = useState({
+    isFish: false,
+    minSimilarity: 0,
+    minRevenue: 0,
+  });
 
   useEffect(() => {
     let tmp = Graph.graphs;
@@ -35,19 +40,11 @@ export default function Home() {
           <DataTable data={graphOverviewData} selectedGraph={selectedGraph} setSelectGraph={setSelectedGraph}></DataTable>
         </div>
         <div className="flex flex-col block m-2 h-full p-10">
-          <div className="w-full h-fit border-b-[1px] flex items-center text-xl">
-            <h1 className="text-xl">Detail</h1>
+          <div className="w-full h-20 border-b-[1px] flex items-center text-xl">
+            <h1 className="text-xl mr-6">Detail</h1>
+            <DataTableFilter setNetworkFilter={setSourceFilter}></DataTableFilter>
           </div>
-          <div className="h-fit">
-            <div>
-              <p>selectedGraphID: {selectedGraph}</p>
-              <p>number of node: {Graph.graphs[selectedGraph - 1].num_nodes}</p>
-              <p>
-                number of edges: {Graph.graphs[selectedGraph - 1].num_links}
-              </p>
-            </div>
-          </div>
-          <DetailTable data={Graph.graphs.filter(x => x.id === selectedGraph)[0]}></DetailTable>
+          <DetailTable data={Graph.graphs[selectedGraph - 1]} filter={sourceFilter}></DetailTable>
         </div>
       </div>
     </main>
