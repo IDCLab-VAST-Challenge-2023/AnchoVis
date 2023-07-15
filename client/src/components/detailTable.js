@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function detailTable({ data }) {
-  console.log(data)
   const maxSrcSize = 200;
   const maxTrgSize = 200;
   const srcInfo = {};
@@ -41,7 +40,6 @@ export default function detailTable({ data }) {
     }
     matrixValue.push(tmp);
   }
-  console.log(matrixValue)
   return(
     <div className="flex flex-col overflow-y-auto">
       <div className="sm:-mx-6 lg:-mx-8">
@@ -66,7 +64,7 @@ export default function detailTable({ data }) {
                 </th>
                 {
                   trgList.slice(0, maxTrgSize).map((x, i) => (
-                    <th scope="col" className="px-6 py-4" key="country">
+                    <th scope="col" className="px-6 py-4" key={`trg${i}`}>
                       {x[0]}
                     </th>
                   ))
@@ -107,7 +105,7 @@ export default function detailTable({ data }) {
                             else return "#bab0ac";
                           }
                           return(
-                            <td scope="col" className="px-6 py-4" style={{backgroundColor: getColor(y.type)}} key={`matrix${j}`}>
+                            <td scope="col" className="px-6 py-4" style={{backgroundColor: getColor(y.type)}} key={`matrix${i}${j}`}>
                               {y.type}
                             </td>
                           )
