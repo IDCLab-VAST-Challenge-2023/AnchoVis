@@ -1,11 +1,10 @@
-// 우리 버전
 import * as d3 from "d3";
 
-export function AM() {
-  const margin = { top: 90, right: 20, bottom: 20, left: 40 };
+export function symAM() {
+  const margin = { top: 80, right: 20, bottom: 20, left: 40 };
   const [width, height] = [
     600 - margin.left - margin.right,
-    320 - margin.top - margin.bottom,
+    600 - margin.top - margin.bottom,
   ];
   const svg = d3
     .create("svg")
@@ -23,48 +22,61 @@ export function AM() {
 
     const labels = svg
       .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top / 2})`);
-
-    labels
-      .append("text")
-      .text("x: targets")
-      .attr("text-anchor", "start")
-      .attr("font-size", "14px")
-      .attr("transform", `translate(${0}, ${0})`);
-    labels
-      .append("text")
-      .text("y: sources")
-      .attr("text-anchor", "start")
-      .attr("font-size", "14px")
-      .attr("transform", `translate(${70}, ${0})`);
+      .attr("transform", `translate(${margin.left}, ${25})`);
 
     labels
       .append("rect")
       .attr("x", 0)
-      .attr("y", 10)
+      .attr("y", 0)
       .attr("width", 10)
       .attr("height", 10)
-      .attr("fill", d3.schemeTableau10[0]);
+      .attr("fill", d3.schemeCategory10[0]);
+    labels
+      .append("text")
+      .text("Sources")
+      .attr("text-anchor", "start")
+      .attr("font-size", "14px")
+      .attr("transform", `translate(${15}, ${10})`);
+    labels
+      .append("rect")
+      .attr("x", 90)
+      .attr("y", 0)
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("fill", d3.schemeCategory10[1]);
+    labels
+      .append("text")
+      .text("Targets")
+      .attr("text-anchor", "start")
+      .attr("font-size", "14px")
+      .attr("transform", `translate(${105}, ${10})`);
+    labels
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("fill", d3.schemeCategory10[2]);
     labels
       .append("text")
       .text("Beneficial Owner")
       .attr("text-anchor", "start")
       .attr("font-size", "14px")
-      .attr("transform", `translate(${15}, ${20})`);
+      .attr("transform", `translate(${15}, ${30})`);
 
     labels
       .append("rect")
       .attr("x", 150)
-      .attr("y", 10)
+      .attr("y", 20)
       .attr("width", 10)
       .attr("height", 10)
-      .attr("fill", d3.schemeTableau10[1]);
+      .attr("fill", d3.schemeCategory10[3]);
     labels
       .append("text")
       .text("Company Contacts")
       .attr("text-anchor", "start")
       .attr("font-size", "14px")
-      .attr("transform", `translate(${165}, ${20})`);
+      .attr("transform", `translate(${165}, ${30})`);
 
     const container = svg
       .append("g")
@@ -72,18 +84,16 @@ export function AM() {
 
     const nodes = graph.graph.nodes;
     const links = graph.graph.links;
-    const sourceNodes = nodes.filter((n) => n.is_source);
-    const targetNodes = nodes.filter((n) => !n.is_source);
 
     const xScale = d3
       .scaleBand()
       .padding(0.03)
-      .domain(targetNodes.map((_, i) => i + 1))
+      .domain(nodes.map((_, i) => i + 1))
       .range([0, width]);
     const yScale = d3
       .scaleBand()
       .padding(0.03)
-      .domain(sourceNodes.map((_, i) => i + 1))
+      .domain(nodes.map((_, i) => i + 1))
       .range([0, height]);
 
     const xAxis = container
@@ -98,29 +108,28 @@ export function AM() {
       .call(d3.axisLeft(yScale));
 
     let matrix = [];
-    sourceNodes.forEach((s, i) => {
-      targetNodes.forEach((t, j) => {
+    nodes.forEach((src, i) => {
+      nodes.forEach((trg, j) => {
         matrix.push({
-          source: s.id,
-          target: t.id,
-          value: 0,
+          source: src.id,
+          target: trg.id,
+          value: -1,
           ocean: false,
-          x: xScale(j + 1),
-          y: yScale(i + 1),
+          x: xScale(i + 1),
+          y: yScale(j + 1),
         });
       });
     });
-
-    // nodes.forEach((n, i) => {
-    //   matrix[i * targetNodes.length + i].value = n.is_source;
-    //   matrix[i * targetNodes.length + i].ocean = oceanNodes.includes(n.id);
-    //   console.log(oceanNodes.includes(n.id));
-    // });
-
+    nodes.forEach((n, i) => {
+      matrix[i * nodes.length + i].value = n.is_source;
+      matrix[i * nodes.length + i].ocean = oceanNodes.includes(n.id);
+      console.log(oceanNodes.includes(n.id));
+    });
     links.forEach((l) => {
-      let src = sourceNodes.findIndex((n) => n.id === l.source);
-      let trg = targetNodes.findIndex((n) => n.id === l.target);
-      matrix[src * targetNodes.length + trg].value = l.type;
+      let src = nodes.findIndex((n) => n.id === l.source);
+      let trg = nodes.findIndex((n) => n.id === l.target);
+      matrix[src * nodes.length + trg].value = l.type;
+      matrix[trg * nodes.length + src].value = l.type;
     });
 
     const cells = container
@@ -134,11 +143,17 @@ export function AM() {
       .attr("height", yScale.bandwidth())
       .attr("fill", (d) =>
         d.value === "Beneficial Owner"
-          ? d3.schemeTableau10[0]
+          ? d3.schemeCategory10[2]
           : d.value === "Company Contacts"
-          ? d3.schemeTableau10[1]
-          : "whitesmoke"
-      );
+          ? d3.schemeCategory10[3]
+          : d.value === 1
+          ? d3.schemeCategory10[0]
+          : d.value === 0
+          ? d3.schemeCategory10[1]
+          : "white"
+      )
+      .attr("stroke", (d) => (d.ocean ? "black" : "none"))
+      .attr("stroke-width", (d) => (d.ocean ? 4 : 0));
   }
   return {
     element: svg.node(),

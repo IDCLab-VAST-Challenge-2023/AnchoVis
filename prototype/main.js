@@ -2,7 +2,8 @@ import "./style.scss";
 import * as d3 from "d3";
 import { AM } from "./src/AM";
 import { BP } from "./src/BP";
-import data from "./public/data/ocean_graphs.json";
+import { symAM } from "./src/symAM";
+import data from "./public/data/graphs.json";
 
 async function main() {
   let oceanNodes;
@@ -13,10 +14,11 @@ async function main() {
   console.log(oceanNodes);
 
   const main = d3.select("#app");
-  const amDiv = main.append("div").attr("id", "am");
-  const bpDiv = main.append("div").attr("id", "bp");
+  const mainDiv = main.append("div").attr("id", "main");
+  // const amDiv = main.append("div").attr("id", "am");
+  // const bpDiv = main.append("div").attr("id", "bp");
 
-  const graphs = data.graphs.filter((g) => g.graph.nodes.length > 5);
+  const graphs = data.graphs.filter((g) => g.graph.nodes.length > 10);
   graphs.shift();
   graphs.forEach((graph, i) => {
     let am = AM();
@@ -24,19 +26,25 @@ async function main() {
       graph,
       oceanNodes.map((n) => n.id)
     );
-    amDiv.node().appendChild(am.element);
+    mainDiv.node().appendChild(am.element);
   });
 
-  // const main = d3.select("#app");
-  // const graphs = data.graphs;
-  //graphs.shift();
   graphs.forEach((graph, i) => {
     let bp = BP();
     bp.update(
       graph,
       oceanNodes.map((n) => n.id)
     );
-    bpDiv.node().appendChild(bp.element);
+    mainDiv.node().appendChild(bp.element);
+  });
+
+  graphs.forEach((graph, i) => {
+    let symAm = symAM();
+    symAm.update(
+      graph,
+      oceanNodes.map((n) => n.id)
+    );
+    mainDiv.node().appendChild(symAm.element);
   });
 
   const modeSelector = d3.select("#mode");
