@@ -75,8 +75,10 @@ export default function Home() {
             overflowX={"hidden"}
           >
             <DataTableFilter
+              
               networkFilter={sourceFilter}
               setNetworkFilter={setSourceFilter}
+              
             />
             <Box minW={100} h={"82vh"} overflow={"hidden"} mt={4}>
               {selectedGraph !== null ? (

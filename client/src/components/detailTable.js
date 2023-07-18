@@ -30,9 +30,10 @@ const jcd = (a, b) => {
   return intersection.size / union.size;
 };
 
-export default function detailTable({ data, filter }) {
+export default function detailTable({ data, filter, tmp }) {
   const [selectedSource, setSelectedSource] = useState(null);
   const [selectedIdx, setSelectedIdx] = useState(-1);
+
   const { srcInfo, srcList, trgList, linkType } = useMemo(() => {
     const srcInfo = {};
     const src = {};
@@ -57,7 +58,7 @@ export default function detailTable({ data, filter }) {
     let srcList = Object.entries(src).filter((x) => x[1] > 0);
     let trgList = Object.entries(trg).filter((x) => x[1] > 0);
 
-    if (selectedSource) {
+    if (selectedSource && srcInfo[selectedSource]) {
       srcList.sort((a, b) => {
         const aInfo = srcInfo[a[0]];
         const bInfo = srcInfo[b[0]];
@@ -75,6 +76,10 @@ export default function detailTable({ data, filter }) {
           (x) => !srcInfo[selectedSource].targets.includes(x[0])
         ),
       ];
+    }
+    else{
+      setSelectedIdx(-1);
+      setSelectedSource(null);
     }
     return { srcInfo, srcList, trgList, linkType };
   }, [data, filter, selectedSource]);
@@ -197,7 +202,7 @@ export default function detailTable({ data, filter }) {
                           bgColor={colorMap[y.type]}
                           key={`matrix${i}${j}`}
                         >
-                          {}
+                          { }
                         </Td>
                       );
                     })}
