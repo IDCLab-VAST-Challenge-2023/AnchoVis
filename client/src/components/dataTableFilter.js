@@ -2,7 +2,7 @@ import {
   Box, Flex, FormLabel, Slider, SliderFilledTrack,
   SliderThumb, SliderTrack, Spacer, Stack, Switch, Tooltip
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const debounce = (func, delay) => {
   let debounceTimer;

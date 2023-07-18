@@ -17,8 +17,8 @@
 }
 
 @layer components {
-  #__next {
-  }
+  #__next {}
+
   html,
   body {
     overflow-x: hidden;
@@ -30,6 +30,7 @@ th {
   min-width: 100px;
   min-height: 50px;
 }
+
 .table-container {
   overflow-x: auto;
   white-space: nowrap;
@@ -44,8 +45,13 @@ tr.data-table-row:hover {
   color: black;
 }
 
+td.source-id:hover {
+  background-color: #EEF2F6;
+  color: black;
+}
+
 td.mark {
-  border: 5px solid white
+  border: 0px solid white
 }
 
 td.mark:hover {

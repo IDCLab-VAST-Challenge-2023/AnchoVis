@@ -1,48 +1,109 @@
-import { FaFish } from "react-icons/fa";
-import { Box, Table, Tbody, Td, Th, Thead, Tr, Flex, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Icon,
+  Spacer,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+} from "@chakra-ui/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FaFish, FaInfoCircle } from "react-icons/fa";
 
 const colorMap = {
   "Beneficial Owner": "#4e79a7",
   "Company Contacts": "#f28e2b",
 };
 
-const CELL_WIDTH = 39;
+const CELL_WIDTH = 18;
+
+const jcd = (a, b) => {
+  const aSet = new Set(a);
+  const bSet = new Set(b);
+  const intersection = new Set([...aSet].filter((x) => bSet.has(x)));
+  const union = new Set([...aSet, ...bSet]);
+  return intersection.size / union.size;
+};
 
 export default function detailTable({ data, filter }) {
-  const srcInfo = {};
-  const src = {};
-  const trg = {};
-  const linkType = {};
-  data.graph.nodes.forEach((node) => (srcInfo[node.id] = node));
-  data.graph.links.forEach((link) => {
-    const source = srcInfo[link.source];
-    if (
-      source.is_ocean >= 1 * filter.isFish &&
-      source.similarity >= filter.minSimilarity &&
-      source.total_revenue >= filter.minRevenue
-    ) {
-      src[link.source] = (src[link.source] || 0) + 1;
-      trg[link.target] = (trg[link.target] || 0) + 1;
-      linkType[[link.source, link.target]] = link.type;
-    }
-  });
-  let srcList = Object.entries(src)
-    .sort((a, b) => b[1] - a[1])
-    .filter((x) => x[1] > 0);
-  let trgList = Object.entries(trg)
-    .sort((a, b) => b[1] - a[1])
-    .filter((x) => x[1] > 0);
+  const [selectedSource, setSelectedSource] = useState(null);
+  const [selectedIdx, setSelectedIdx] = useState(-1);
+  const { srcInfo, srcList, trgList, linkType } = useMemo(() => {
+    const srcInfo = {};
+    const src = {};
+    const trg = {};
+    const linkType = {};
+    data.graph.nodes.forEach(
+      (node) => (srcInfo[node.id] = { ...node, targets: [] })
+    );
+    data.graph.links.forEach((link) => {
+      const source = srcInfo[link.source];
+      if (
+        source.is_ocean >= 1 * filter.isFish &&
+        source.similarity >= filter.minSimilarity &&
+        source.total_revenue >= filter.minRevenue
+      ) {
+        src[link.source] = (src[link.source] || 0) + 1;
+        trg[link.target] = (trg[link.target] || 0) + 1;
+        srcInfo[link.source].targets.push(link.target);
+        linkType[[link.source, link.target]] = link.type;
+      }
+    });
+    let srcList = Object.entries(src).filter((x) => x[1] > 0);
+    let trgList = Object.entries(trg).filter((x) => x[1] > 0);
 
-  const matrixValue = srcList.map((src) =>
-    trgList.map((trg) => ({
-      type: linkType[[src[0], trg[0]]],
-      src: src[0],
-      trg: trg[0],
-    }))
+    if (selectedSource) {
+      srcList.sort((a, b) => {
+        const aInfo = srcInfo[a[0]];
+        const bInfo = srcInfo[b[0]];
+        const selectedInfo = srcInfo[selectedSource];
+        const aJcd = jcd(aInfo.targets, selectedInfo.targets);
+        const bJcd = jcd(bInfo.targets, selectedInfo.targets);
+        return bJcd - aJcd;
+      });
+
+      trgList = [
+        ...trgList.filter((x) =>
+          srcInfo[selectedSource].targets.includes(x[0])
+        ),
+        ...trgList.filter(
+          (x) => !srcInfo[selectedSource].targets.includes(x[0])
+        ),
+      ];
+    }
+    return { srcInfo, srcList, trgList, linkType };
+  }, [data, filter, selectedSource]);
+
+  const matrixValue = useMemo(
+    () =>
+      srcList.map((src) =>
+        trgList.map((trg) => ({
+          type: linkType[[src[0], trg[0]]],
+          src: src[0],
+          trg: trg[0],
+        }))
+      ),
+    [srcList, trgList, linkType]
   );
+
   function getSrcIndex(srcValue) {
     return matrixValue.findIndex((row) => row[0]?.src === srcValue);
   }
+
+  const rowRef = useRef([]);
+
+  useEffect(() => {
+    if (selectedIdx >= 0) {
+      rowRef.current[0].scrollIntoView({
+        block: "center",
+      });
+    }
+  }, [selectedIdx]);
 
   return (
     <Box display={"block"} w={"full"}>
@@ -59,14 +120,11 @@ export default function detailTable({ data, filter }) {
               <Th w={200} style={{ left: 0, position: "sticky" }}>
                 Source ID
               </Th>
-              <Th w={90} style={{ left: 200, position: "sticky" }}>
-                Fishing
-              </Th>
               {/* <Th>Revenue</Th> */}
-              <Th w={120} style={{ left: 290, position: "sticky" }}>
-                Similarity
+              <Th w={120} style={{ left: 200, position: "sticky" }}>
+                {"Max Pair Similarity"}
               </Th>
-              <Th w={120} style={{ left: 410, position: "sticky" }}>
+              <Th w={120} style={{ left: 200 + 120, position: "sticky" }}>
                 Country
               </Th>
               <Th colSpan={trgList.length} w={trgList.length * CELL_WIDTH} />
@@ -82,30 +140,53 @@ export default function detailTable({ data, filter }) {
 
                 let idx = getSrcIndex(x.id);
                 return (
-                  <Tr key={`row${i}`} h={12}>
+                  <Tr
+                    key={`row${i}`}
+                    h={12}
+                    ref={(el) => (rowRef.current[i] = el)}
+                    onClick={() => {
+                      if (selectedSource === x.id) {
+                        setSelectedSource(null);
+                        setSelectedIdx(-1);
+                      } else {
+                        setSelectedSource(x.id);
+                        setSelectedIdx(idx);
+                      }
+                    }}
+                    bgColor={selectedSource === x.id ? "gray.600" : null}
+                    color={selectedSource === x.id ? "white" : null}
+                  >
                     <Td
+                      className="source-id"
                       key={x.id}
-                      bgColor={"white"}
+                      bgColor={selectedSource === x.id ? "gray.600" : "white"}
                       style={{ left: 0, position: "sticky" }}
                     >
-                      {x.id}
-                    </Td>
-                    <Td
-                      bgColor={"white"}
-                      style={{ left: 200, position: "sticky" }}
-                    >
-                      {x.is_ocean ? <Icon as={FaFish} p={0}  />  : ""}
+                      <Center gap={2}>
+                        <Box>{x.id}</Box>
+                        <Spacer />
+                        {x.is_ocean ? <Icon as={FaFish} p={0} /> : ""}
+                        <Tooltip
+                          hasArrow
+                          label={x.product_services}
+                          placement="auto"
+                        >
+                          <span>
+                            <Icon as={FaInfoCircle} p={0} />
+                          </span>
+                        </Tooltip>
+                      </Center>
                     </Td>
                     <Td
                       isNumeric
-                      bgColor={"white"}
-                      style={{ left: 290, position: "sticky" }}
+                      bgColor={selectedSource === x.id ? "gray.600" : "white"}
+                      style={{ left: 200, position: "sticky" }}
                     >
                       {x.similarity.toFixed(2)}
                     </Td>
                     <Td
-                      bgColor={"white"}
-                      style={{ left: 410, position: "sticky" }}
+                      bgColor={selectedSource === x.id ? "gray.600" : "white"}
+                      style={{ left: 200 + 120, position: "sticky" }}
                     >
                       {x.country}
                     </Td>
@@ -116,7 +197,7 @@ export default function detailTable({ data, filter }) {
                           bgColor={colorMap[y.type]}
                           key={`matrix${i}${j}`}
                         >
-                          { }
+                          {}
                         </Td>
                       );
                     })}
@@ -139,22 +220,29 @@ export default function detailTable({ data, filter }) {
                 <Th
                   colSpan={4}
                   bgColor={"white"}
-                  w={200 + 90 + 120 + 120}
+                  w={200 + 120 + 120}
                   style={{ left: 0, position: "sticky" }}
                   verticalAlign={"top"}
                   fontSize={"sm"}
                 >
                   <Box>
                     <Flex gap={2} px={2} align="center">
-                      <Box w={12} h={6} bgColor={colorMap["Beneficial Owner"]}></Box>
+                      <Box
+                        w={12}
+                        h={6}
+                        bgColor={colorMap["Beneficial Owner"]}
+                      ></Box>
                       <Box mr={4}>Beneficial Owner</Box>
                     </Flex>
                     <Flex gap={2} px={2} align="center" my={2}>
-                      <Box w={12} h={6} bgColor={colorMap["Company Contacts"]}></Box>
+                      <Box
+                        w={12}
+                        h={6}
+                        bgColor={colorMap["Company Contacts"]}
+                      ></Box>
                       <Box>Company Contacts</Box>
                     </Flex>
                   </Box>
-
                 </Th>
                 {trgList.map((x, i) => (
                   <Th
