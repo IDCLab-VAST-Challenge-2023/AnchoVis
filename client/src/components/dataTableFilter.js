@@ -9,14 +9,24 @@ import {
   Box,
 } from '@chakra-ui/react'
 
+
+const debounce = (func, delay) => {
+  let debounceTimer
+  return function () {
+    const context = this
+    const args = arguments
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => func.apply(context, args), delay)
+  }
+}
+
 export default function DataTableFilter({ setNetworkFilter }) {
-  console.log("DataTableFilter")
 
   const [isFish, setIsFish] = useState(true);
+  const [tmpSimilarity, setTmpSimilarity] = useState(0.5);
   const [minSimilarity, setMinSimilarity] = useState(0.5);
   const [showTooltip1, setShowTooltip1] = useState(false)
   const [minRevenue, setMinRevenue] = useState(0)
-  const [showTooltip2, setShowTooltip2] = useState(false)
 
   useEffect(() => {
     setNetworkFilter({
@@ -38,11 +48,15 @@ export default function DataTableFilter({ setNetworkFilter }) {
           <Box className="ml-2 w-[200px]">
             <Slider
               aria-label='slider-ex-1'
-              value={minSimilarity}
+              value={tmpSimilarity}
               min={0}
               max={1}
               step={0.01}
-              onChange={(x) => setMinSimilarity(x)}
+              onChange={(x) => {
+                // set minSimilarity with debounce
+                setTmpSimilarity(x)
+                debounce(setMinSimilarity, 650)(x)
+              }}
               onMouseEnter={() => setShowTooltip1(true)}
               onMouseLeave={() => setShowTooltip1(false)}
             >
@@ -51,46 +65,17 @@ export default function DataTableFilter({ setNetworkFilter }) {
               </SliderTrack>
               <Tooltip
                 hasArrow
-                bg='teal.500'
+                bg='blue.500'
                 color='white'
                 placement='top'
                 isOpen={showTooltip1}
-                label={minSimilarity}
+                label={tmpSimilarity}
               >
                 <SliderThumb />
               </Tooltip>
             </Slider>
           </Box>
         </Stack>
-        {/* <Stack align="center" direction="row">
-          <FormLabel m="0" ml="4">Revenue:</FormLabel>
-          <Box className="ml-2 w-[200px]">
-            <Slider
-              aria-label='slider-ex-1'
-              defaultValue={0}
-              min={0}
-              max={1000000}
-              step={1000}
-              onChange={(x) => setMinRevenue(x)}
-              onMouseEnter={() => setShowTooltip2(true)}
-              onMouseLeave={() => setShowTooltip2(false)}
-            >
-              <SliderTrack>
-                <SliderFilledTrack w="200" />
-              </SliderTrack>
-              <Tooltip
-                hasArrow
-                bg='teal.500'
-                color='white'
-                placement='top'
-                isOpen={showTooltip2}
-                label={minRevenue}
-              >
-                <SliderThumb />
-              </Tooltip>
-            </Slider>
-          </Box>
-        </Stack> */}
       </Box>
     </Box>
   );

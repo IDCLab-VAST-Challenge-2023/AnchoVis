@@ -1,20 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Flex, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Flex,
-} from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+
+let a = 0;
 export default function DataTable({ data, selectedGraph, setSelectGraph }) {
-  console.log("DataTable");
   const [hoveredGraph, setHoveredGraph] = useState(null);
 
   function hoverSelectHandler(id) {
@@ -22,14 +12,6 @@ export default function DataTable({ data, selectedGraph, setSelectGraph }) {
     else if (id === hoveredGraph) return "rgb(226 232 240)";
     else return "white";
   }
-
-  // find maxSimilarity and memo to x.maxSimilarity
-  data.forEach((x) => {
-    x.maxSimilarity = 0;
-    x.graph.nodes.forEach((y) => {
-      if (y.similarity > x.maxSimilarity) x.maxSimilarity = y.similarity;
-    });
-  });
 
   return (
     <Flex direction="column" overflowY="auto">
@@ -53,7 +35,9 @@ export default function DataTable({ data, selectedGraph, setSelectGraph }) {
               onMouseOver={() => setHoveredGraph(x.id)}
               onMouseOut={() => setHoveredGraph(null)}
             >
-              <Td p={0} isNumeric>{x.id}</Td>
+              <Td p={0} isNumeric>
+                {x.id}
+              </Td>
               <Td>
                 <FontAwesomeIcon icon={faFish} />{" "}
                 <FontAwesomeIcon icon={faXmark} /> {x.num_ocean_nodes}

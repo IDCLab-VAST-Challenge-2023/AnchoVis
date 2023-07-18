@@ -5,6 +5,21 @@ import DataTableFilter from "@/components/dataTableFilter";
 import DetailTable from "@/components/detailTable";
 
 import { Box, Container, Flex } from "@chakra-ui/react";
+
+
+
+Graph.graphs.forEach((x) => {
+  x.maxSimilarity = 0;
+  x.graph.nodes.forEach((y) => {
+    if (y.similarity > x.maxSimilarity) x.maxSimilarity = y.similarity;
+  });
+});
+
+
+
+// find maxSimilarity and memo to x.maxSimilarity
+
+
 export default function Home() {
   const [graphOverviewData, setGraphOverviewData] = useState(Graph.graphs);
   const [selectedGraph, setSelectedGraph] = useState(null);
@@ -19,19 +34,29 @@ export default function Home() {
     minRevenue: 0,
   });
 
+
+
   useEffect(() => {
-    let tmp = Graph.graphs;
-    tmp = tmp.filter((x) => x.num_ocean_nodes >= 1 * networkFilter.isFish);
-    tmp = tmp.filter((x) => {
-      let maxSimilarity = 0;
-      x.graph.nodes.forEach((y) => {
-        if (y.similarity > maxSimilarity) maxSimilarity = y.similarity;
-      });
-      return maxSimilarity >= networkFilter.minSimilarity;
+    let a = Date.now();
+
+    const filteredGraphs = Graph.graphs.filter((graph) => {
+      const maxSimilarity = Math.max(...graph.graph.nodes.map((node) => node.similarity));
+      return (
+        graph.num_ocean_nodes >= 1 * networkFilter.isFish &&
+        maxSimilarity >= networkFilter.minSimilarity &&
+        graph.average_revenue >= networkFilter.minRevenue
+      );
     });
-    tmp = tmp.filter((x) => x.average_revenue >= networkFilter.minRevenue);
-    setGraphOverviewData(tmp);
+    setGraphOverviewData(filteredGraphs);
+
+    let b = Date.now();
+
+    console.log(b-a)
   }, [networkFilter]);
+
+
+  
+
 
   return (
     <Flex bgColor={"gray.50"} maxW="full" gap={4}>
@@ -49,7 +74,7 @@ export default function Home() {
         <DataTableFilter setNetworkFilter={setSourceFilter}></DataTableFilter>
         {selectedGraph !== null ? (
           <DetailTable
-            data={Graph.graphs[selectedGraph - 1]}
+            data={Graph.graphs[selectedGraph-1]}
             filter={sourceFilter}
           ></DetailTable>
         ) : (
