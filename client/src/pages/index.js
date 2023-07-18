@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
-import Graph from "@/data/graphs.json";
 import DataTable from "@/components/dataTable";
 import DataTableFilter from "@/components/dataTableFilter";
 import DetailTable from "@/components/detailTable";
+import Graph from "@/data/graphs.json";
+import { useEffect, useMemo, useState } from "react";
 
-import { Box, Container, Flex } from "@chakra-ui/react";
-
-
+import { Footer, Header } from "@/components/layout";
+import { Box, Container, Center, Flex } from "@chakra-ui/react";
 
 Graph.graphs.forEach((x) => {
   x.maxSimilarity = 0;
@@ -15,13 +14,9 @@ Graph.graphs.forEach((x) => {
   });
 });
 
-
-
 // find maxSimilarity and memo to x.maxSimilarity
 
-
 export default function Home() {
-  const [graphOverviewData, setGraphOverviewData] = useState(Graph.graphs);
   const [selectedGraph, setSelectedGraph] = useState(null);
   const [networkFilter, setNetworkFilter] = useState({
     isFish: true,
@@ -33,94 +28,54 @@ export default function Home() {
     minSimilarity: 0.5,
     minRevenue: 0,
   });
-
-
-
-  useEffect(() => {
-    let a = Date.now();
-
+  const graphOverviewData = useMemo(() => {
     const filteredGraphs = Graph.graphs.filter((graph) => {
-      const maxSimilarity = Math.max(...graph.graph.nodes.map((node) => node.similarity));
+      const maxSimilarity = Math.max(
+        ...graph.graph.nodes.map((node) => node.similarity)
+      );
       return (
         graph.num_ocean_nodes >= 1 * networkFilter.isFish &&
         maxSimilarity >= networkFilter.minSimilarity &&
         graph.average_revenue >= networkFilter.minRevenue
       );
     });
-    setGraphOverviewData(filteredGraphs);
-
-    let b = Date.now();
-
-    console.log(b-a)
+    return filteredGraphs;
   }, [networkFilter]);
 
-
-  
-
-
   return (
-    <Flex bgColor={"gray.50"} maxW="full" gap={4}>
-      <Box>
-        <DataTableFilter setNetworkFilter={setNetworkFilter}></DataTableFilter>
-        <Box minW={600} h={1200} overflow={"auto"}>
-          <DataTable
-            data={graphOverviewData}
-            selectedGraph={selectedGraph}
-            setSelectGraph={setSelectedGraph}
-          />
-        </Box>
-      </Box>
-      <Box bgColor={"white"} w={2000} p={4} rounded="lg">
-        <DataTableFilter setNetworkFilter={setSourceFilter}></DataTableFilter>
-        {selectedGraph !== null ? (
-          <DetailTable
-            data={Graph.graphs[selectedGraph-1]}
-            filter={sourceFilter}
-          ></DetailTable>
-        ) : (
-          <div className="flex items-center justify-center w-full h-full p-24 text-2xl font-semibold">
-            Please select a network
-          </div>
-        )}
-      </Box>
-    </Flex>
-  );
+    <>
+      <Header />
+      <Container maxW="full" px={4}  >
+        <Flex w={"full"} dir="column" gap={4} >
+          <Box w={"fit-content"} p={4} bgColor={"white"} borderRadius={"md"} shadow={"sm"}>
+            <DataTableFilter setNetworkFilter={setNetworkFilter}></DataTableFilter>
+            <Box minW={100} h={"82vh"} overflow={"auto"} mt={4}>
+              <DataTable
+                data={graphOverviewData}
+                selectedGraph={selectedGraph}
+                setSelectGraph={setSelectedGraph}
+              />
+            </Box>
+          </Box>
+          <Box w={"full"} p={4} bgColor={"white"} borderRadius={"md"} shadow={"sm"} overflowX={"hidden"}>
+            <DataTableFilter setNetworkFilter={setSourceFilter}></DataTableFilter>
+            <Box minW={100} h={"82vh"} overflow={"hidden"} mt={4}>
 
-  // return (
-  //   <main className=" bg-gray-100">
-  //     <div className="flex w-300 ">
-  //       <div className="flex flex-col m-2 h-fit p-10 overflow-x-auto">
-  //         <div className="w-full h-20 border-b-[1px] flex items-center text-xl">
-  //           <h1 className="text-xl ml-6">Overview</h1>
-  //           <DataTableFilter
-  //             setNetworkFilter={setNetworkFilter}
-  //           ></DataTableFilter>
-  //         </div>
-  //         <DataTable
-  //           data={graphOverviewData}
-  //           selectedGraph={selectedGraph}
-  //           setSelectGraph={setSelectedGraph}
-  //         ></DataTable>
-  //       </div>
-  //       <div className="flex flex-col m-2 w-full p-10">
-  //         <div className="w-full h-20 border-b-[1px] flex items-center text-xl">
-  //           <h1 className="text-xl mr-6 ml-6">Detail</h1>
-  //           <DataTableFilter
-  //             setNetworkFilter={setSourceFilter}
-  //           ></DataTableFilter>
-  //         </div>
-  //         {selectedGraph !== null ? (
-  //           <DetailTable
-  //             data={Graph.graphs[selectedGraph - 1]}
-  //             filter={sourceFilter}
-  //           ></DetailTable>
-  //         ) : (
-  //           <div className="flex items-center justify-center w-full h-full p-24 text-2xl font-semibold">
-  //             Please select a network
-  //           </div>
-  //         )}
-  //       </div>
-  //     </div>
-  //   </main>
-  // );
+              {selectedGraph !== null ? (
+                <DetailTable
+                  data={Graph.graphs[selectedGraph - 1]}
+                  filter={sourceFilter}
+                ></DetailTable>
+              ) : (
+                <Center h="full">
+                  Please Select the Network
+                </Center>
+              )}
+            </Box>
+          </Box>
+        </Flex>
+      </Container>
+      <Footer />
+    </>
+  );
 }

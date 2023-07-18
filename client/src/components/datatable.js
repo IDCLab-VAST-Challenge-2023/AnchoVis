@@ -1,22 +1,16 @@
-import { Flex, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
-import { faFish, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { Flex, Icon, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { FaFish } from "react-icons/fa";
 
-let a = 0;
 export default function DataTable({ data, selectedGraph, setSelectGraph }) {
-  const [hoveredGraph, setHoveredGraph] = useState(null);
-
-  function hoverSelectHandler(id) {
-    if (id === selectedGraph) return "rgb(148 163 184)";
-    else if (id === hoveredGraph) return "rgb(226 232 240)";
-    else return "white";
-  }
-
   return (
-    <Flex direction="column" overflowY="auto">
+    <Flex direction="column">
       <Table variant="simple" size="sm" p={0}>
-        <Thead position={"sticky"} top={0}>
+        <Thead
+          position={"sticky"}
+          top={0}
+          boxShadow={"0 -2px 0 #E3E7EF inset"}
+          bgColor={"white"}
+        >
           <Tr>
             <Th>ID</Th>
             <Th>Fishing</Th>
@@ -29,18 +23,24 @@ export default function DataTable({ data, selectedGraph, setSelectGraph }) {
         <Tbody>
           {data.map((x, i) => (
             <Tr
+              className="data-table-row"
               key={i}
-              style={{ backgroundColor: hoverSelectHandler(x.id) }}
-              onClick={() => setSelectGraph(x.id)}
-              onMouseOver={() => setHoveredGraph(x.id)}
-              onMouseOut={() => setHoveredGraph(null)}
+              color={x.id === selectedGraph ? "white" : null}
+              bgColor={x.id === selectedGraph ? "gray.600" : null}
+              onClick={() => {
+                if (x.id === selectedGraph) {
+                  setSelectGraph(null);
+                } else {
+                  setSelectGraph(x.id);
+                }
+              }}
             >
               <Td p={0} isNumeric>
                 {x.id}
               </Td>
               <Td>
-                <FontAwesomeIcon icon={faFish} />{" "}
-                <FontAwesomeIcon icon={faXmark} /> {x.num_ocean_nodes}
+                <Icon as={FaFish} mr={2}/> 
+                {x.num_ocean_nodes}
               </Td>
               <Td isNumeric>{x.maxSimilarity.toFixed(2)}</Td>
               {/* <Td isNumeric>{x.average_revenue}</Td> */}
@@ -52,129 +52,4 @@ export default function DataTable({ data, selectedGraph, setSelectGraph }) {
       </Table>
     </Flex>
   );
-
-  //               )
-
-  //               return (
-  //               <div className="flex flex-col overflow-y-auto">
-  //                 <div className="sm:-mx-6 lg:-mx-8">
-  //                   <div className="inline-block py-2 sm:px-6 lg:px-8">
-  //                     <table className="text-center text-sm font-light">
-  //                       <thead className="border-b font-medium dark:border-neutral-500">
-  //                         <tr>
-  //                           <th scope="col" className="sticky left-0 bg-white z-10">
-  //                             <div className="px-6 py-4 w-full border-r">Network ID</div>
-  //                           </th>
-  //                           {data.map((x, i) => (
-  //                             <th
-  //                               scope="col"
-  //                               className={"px-6 py-4 cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               {x.id}
-  //                             </th>
-  //                           ))}
-  //                         </tr>
-  //                       </thead>
-  //                       <tbody>
-  //                         <tr className="border-b dark:border-neutral-500">
-  //                           <td className="whitespace-nowrap font-medium fixed ticky left-0">
-  //                             <div className="px-6 py-4 w-full border-r">Fishing</div>
-  //                           </td>
-  //                           {data.map((x, i) => (
-  //                             <td
-  //                               scope="col"
-  //                               className={"px-6 py-4 cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               <FontAwesomeIcon icon={faFish} />{" "}
-  //                               <FontAwesomeIcon icon={faXmark} /> {x.num_ocean_nodes}
-  //                             </td>
-  //                           ))}
-  //                         </tr>
-  //                         <tr className="border-b dark:border-neutral-500">
-  //                           <td className="whitespace-nowrap font-medium fixed">
-  //                             <div className="px-6 py-4 w-full border-r">
-  //                               Max similarity
-  //                             </div>
-  //                           </td>
-  //                           {data.map((x, i) => (
-  //                             <td
-  //                               className={"whitespace-nowrap px-6 py-4 cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               {x.maxSimilarity}
-  //                             </td>
-  //                           ))}
-  //                         </tr>
-  //                         <tr className="border-b dark:border-neutral-500">
-  //                           <td className="whitespace-nowrap font-medium fixed">
-  //                             <div className="px-6 py-4 w-full border-r">Revenue</div>
-  //                           </td>
-  //                           {data.map((x, i) => (
-  //                             <td
-  //                               className={"whitespace-nowrap px-6 py-4 cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               {x.average_revenue}
-  //                             </td>
-  //                           ))}
-  //                         </tr>
-  //                         <tr className="border-b dark:border-neutral-500">
-  //                           <td className="whitespace-nowrap font-medium fixed">
-  //                             <div className="px-6 py-4 w-full border-r"># of Nodes</div>
-  //                           </td>
-  //                           {data.map((x, i) => (
-  //                             <td
-  //                               className={"whitespace-nowrap px-6 py-4 cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               {x.num_nodes}
-  //                             </td>
-  //                           ))}
-  //                         </tr>
-  //                         <tr className="border-b dark:border-neutral-500">
-  //                           <td className="whitespace-nowrap font-medium fixed">
-  //                             <div className="px-6 py-4 w-full border-r"># of Links</div>
-  //                           </td>
-  //                           {data.map((x, i) => (
-  //                             <td
-  //                               className={"whitespace-nowrap px-6 py-4  cursor-pointer"}
-  //                               style={{ backgroundColor: hoverSelectHandler(x.id) }}
-  //                               key={i}
-  //                               onClick={() => setSelectGraph(x.id)}
-  //                               onMouseOver={() => setHoveredGraph(x.id)}
-  //                               onMouseOut={() => setHoveredGraph(null)}
-  //                             >
-  //                               {x.num_links}
-  //                             </td>
-  //                           ))}
-  //                         </tr>
-  //                       </tbody>
-  //                     </table>
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //               );
-  // }
 }

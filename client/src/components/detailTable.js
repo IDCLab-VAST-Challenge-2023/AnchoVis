@@ -1,30 +1,37 @@
-import { faFish } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { Box, Flex, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { FaFish } from "react-icons/fa";
+import { Box, Table, Tbody, Td, Th, Thead, Tr, Flex, Icon } from "@chakra-ui/react";
 
 const colorMap = {
   "Beneficial Owner": "#4e79a7",
   "Company Contacts": "#f28e2b",
 };
 
+const CELL_WIDTH = 39;
+
 export default function detailTable({ data, filter }) {
-  console.log("detailTable");
   const srcInfo = {};
   const src = {};
   const trg = {};
   const linkType = {};
-  data.graph.nodes.forEach(node => srcInfo[node.id] = node);
-  data.graph.links.forEach(link => {
+  data.graph.nodes.forEach((node) => (srcInfo[node.id] = node));
+  data.graph.links.forEach((link) => {
     const source = srcInfo[link.source];
-    if (source.is_ocean >= 1 * filter.isFish && source.similarity >= filter.minSimilarity && source.total_revenue >= filter.minRevenue) {
+    if (
+      source.is_ocean >= 1 * filter.isFish &&
+      source.similarity >= filter.minSimilarity &&
+      source.total_revenue >= filter.minRevenue
+    ) {
       src[link.source] = (src[link.source] || 0) + 1;
       trg[link.target] = (trg[link.target] || 0) + 1;
       linkType[[link.source, link.target]] = link.type;
     }
   });
-  let srcList = Object.entries(src).sort((a, b) => b[1] - a[1]).filter(x => x[1] > 0);
-  let trgList = Object.entries(trg).sort((a, b) => b[1] - a[1]).filter(x => x[1] > 0);
+  let srcList = Object.entries(src)
+    .sort((a, b) => b[1] - a[1])
+    .filter((x) => x[1] > 0);
+  let trgList = Object.entries(trg)
+    .sort((a, b) => b[1] - a[1])
+    .filter((x) => x[1] > 0);
 
   const matrixValue = srcList.map((src) =>
     trgList.map((trg) => ({
@@ -39,16 +46,17 @@ export default function detailTable({ data, filter }) {
 
   return (
     <Box display={"block"} w={"full"}>
-      <Box overflowY="scroll" maxH={"80vh"}>
+      <Box overflowY="scroll" h={"82vh"}>
         <Table variant="unstyled" size="sm" layout="fixed" w="fit-content">
           <Thead>
             <Tr
+              bgColor={"white"}
+              boxShadow={"0 -2px 0 #E3E7EF inset"}
               style={{ position: "sticky", top: 0 }}
-              bgColor={"gray.100"}
               verticalAlign={"center"}
               zIndex={3}
             >
-              <Th w={200} h={12} style={{ left: 0, position: "sticky" }}>
+              <Th w={200} style={{ left: 0, position: "sticky" }}>
                 Source ID
               </Th>
               <Th w={90} style={{ left: 200, position: "sticky" }}>
@@ -61,21 +69,7 @@ export default function detailTable({ data, filter }) {
               <Th w={120} style={{ left: 410, position: "sticky" }}>
                 Country
               </Th>
-              {trgList.map((x, i) => (
-                <Th
-                  pb={10}
-                  fontSize={8}
-                  w={12}
-                  style={{
-                    writingMode: "vertical-lr",
-                    textAlign: "end",
-                    wordWrap: "break-word",
-                  }}
-                  key={`trg${i}`}
-                >
-                  {}
-                </Th>
-              ))}
+              <Th colSpan={trgList.length} w={trgList.length * CELL_WIDTH} />
             </Tr>
           </Thead>
           <Tbody zIndex={1}>
@@ -100,9 +94,8 @@ export default function detailTable({ data, filter }) {
                       bgColor={"white"}
                       style={{ left: 200, position: "sticky" }}
                     >
-                      {x.is_ocean ? <FontAwesomeIcon icon={faFish} /> : ""}
+                      {x.is_ocean ? <Icon as={FaFish} p={0}  />  : ""}
                     </Td>
-                    {/* <Td>{x.total_revenue}</Td> */}
                     <Td
                       isNumeric
                       bgColor={"white"}
@@ -118,8 +111,12 @@ export default function detailTable({ data, filter }) {
                     </Td>
                     {matrixValue[idx].map((y, j) => {
                       return (
-                        <Td bgColor={colorMap[y.type]} key={`matrix${i}${j}`}>
-                          {}
+                        <Td
+                          className="mark"
+                          bgColor={colorMap[y.type]}
+                          key={`matrix${i}${j}`}
+                        >
+                          { }
                         </Td>
                       );
                     })}
@@ -128,54 +125,57 @@ export default function detailTable({ data, filter }) {
               })}
           </Tbody>
         </Table>
-
-        <Table
-          variant="unstyled"
-          size="sm"
-          layout="fixed"
-          w="fit-content"
+        <Box
+          pt={2}
+          bgColor={"white"}
           style={{ position: "sticky", bottom: 0 }}
+          w="fit-content"
+          borderTop={"2px"}
+          borderColor={"gray.200"}
         >
-          <Thead>
-            <Tr>
-              <Th
-                bgColor={"gray.100"}
-                w={200}
-                style={{ left: 0, position: "sticky" }}
-              ></Th>
-              <Th
-                bgColor={"gray.100"}
-                w={90}
-                style={{ left: 200, position: "sticky" }}
-              ></Th>
-              {/* <Th>Revenue</Th> */}
-              <Th
-                bgColor={"gray.100"}
-                w={120}
-                style={{ left: 290, position: "sticky" }}
-              ></Th>
-              <Th
-                bgColor={"gray.100"}
-                w={120}
-                style={{ left: 410, position: "sticky" }}
-              ></Th>
-              {trgList.map((x, i) => (
+          <Table variant="unstyled" size="sm" layout="fixed" w="fit-content">
+            <Thead>
+              <Tr>
                 <Th
-                  w={12}
-                  bgColor={"gray.100"}
-                  style={{
-                    writingMode: "vertical-lr",
-                    textAlign: "start",
-                    wordWrap: "break-word",
-                  }}
-                  key={`trg${i}`}
+                  colSpan={4}
+                  bgColor={"white"}
+                  w={200 + 90 + 120 + 120}
+                  style={{ left: 0, position: "sticky" }}
+                  verticalAlign={"top"}
+                  fontSize={"sm"}
                 >
-                  {x[0]}
+                  <Box>
+                    <Flex gap={2} px={2} align="center">
+                      <Box w={12} h={6} bgColor={colorMap["Beneficial Owner"]}></Box>
+                      <Box mr={4}>Beneficial Owner</Box>
+                    </Flex>
+                    <Flex gap={2} px={2} align="center" my={2}>
+                      <Box w={12} h={6} bgColor={colorMap["Company Contacts"]}></Box>
+                      <Box>Company Contacts</Box>
+                    </Flex>
+                  </Box>
+
                 </Th>
-              ))}
-            </Tr>
-          </Thead>
-        </Table>
+                {trgList.map((x, i) => (
+                  <Th
+                    w={CELL_WIDTH}
+                    p={0}
+                    m={0}
+                    lineHeight={"1px"}
+                    style={{
+                      writingMode: "vertical-lr",
+                      textAlign: "start",
+                      wordWrap: "break-word",
+                    }}
+                    key={`trg${i}`}
+                  >
+                    {x[0]}
+                  </Th>
+                ))}
+              </Tr>
+            </Thead>
+          </Table>
+        </Box>
       </Box>
     </Box>
   );

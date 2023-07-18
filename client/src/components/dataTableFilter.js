@@ -1,61 +1,61 @@
-import { useState, useEffect } from "react";
-import { Stack, FormLabel, Switch } from '@chakra-ui/react'
 import {
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Tooltip,
-  Box,
-} from '@chakra-ui/react'
-
+  Box, Flex, FormLabel, Slider, SliderFilledTrack,
+  SliderThumb, SliderTrack, Spacer, Stack, Switch, Tooltip
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const debounce = (func, delay) => {
-  let debounceTimer
+  let debounceTimer;
   return function () {
-    const context = this
-    const args = arguments
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(() => func.apply(context, args), delay)
-  }
-}
+    const context = this;
+    const args = arguments;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => func.apply(context, args), delay);
+  };
+};
 
 export default function DataTableFilter({ setNetworkFilter }) {
-
   const [isFish, setIsFish] = useState(true);
   const [tmpSimilarity, setTmpSimilarity] = useState(0.5);
   const [minSimilarity, setMinSimilarity] = useState(0.5);
-  const [showTooltip1, setShowTooltip1] = useState(false)
-  const [minRevenue, setMinRevenue] = useState(0)
+  const [showTooltip1, setShowTooltip1] = useState(false);
+  const [minRevenue, setMinRevenue] = useState(0);
 
   useEffect(() => {
     setNetworkFilter({
       isFish: isFish,
       minSimilarity: minSimilarity,
       minRevenue: minRevenue,
-    })
-  }, [isFish, minSimilarity, minRevenue])
+    });
+  }, [isFish, minSimilarity, minRevenue]);
 
   return (
-    <Box className="w-full p-3">
-      <Box className="bg-gray-100 w-full h-full py-2 px-10 flex items-center rounded">
+    <Box w={"full"}>
+      <Flex w={"full"} >
         <Stack align="center" direction="row">
           <FormLabel m="0">isFish:</FormLabel>
-          <Switch size="md" onChange={() => setIsFish(!isFish)} isChecked={isFish} />
+          <Switch
+            size="md"
+            onChange={() => setIsFish(!isFish)}
+            isChecked={isFish}
+          />
         </Stack>
+        <Spacer />
         <Stack align="center" direction="row">
-          <FormLabel m="0" ml="4">Similarity:</FormLabel>
+          <FormLabel m="0" ml="4">
+            Similarity:
+          </FormLabel>
           <Box className="ml-2 w-[200px]">
             <Slider
-              aria-label='slider-ex-1'
+              aria-label="slider-ex-1"
               value={tmpSimilarity}
               min={0}
               max={1}
               step={0.01}
               onChange={(x) => {
                 // set minSimilarity with debounce
-                setTmpSimilarity(x)
-                debounce(setMinSimilarity, 650)(x)
+                setTmpSimilarity(x);
+                debounce(setMinSimilarity, 650)(x);
               }}
               onMouseEnter={() => setShowTooltip1(true)}
               onMouseLeave={() => setShowTooltip1(false)}
@@ -65,9 +65,9 @@ export default function DataTableFilter({ setNetworkFilter }) {
               </SliderTrack>
               <Tooltip
                 hasArrow
-                bg='blue.500'
-                color='white'
-                placement='top'
+                bg="blue.500"
+                color="white"
+                placement="top"
                 isOpen={showTooltip1}
                 label={tmpSimilarity}
               >
@@ -76,7 +76,7 @@ export default function DataTableFilter({ setNetworkFilter }) {
             </Slider>
           </Box>
         </Stack>
-      </Box>
+      </Flex>
     </Box>
   );
 }

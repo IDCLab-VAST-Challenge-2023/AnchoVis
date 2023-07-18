@@ -24,23 +24,8 @@
     overflow-x: hidden;
   }
 }
-.block {
-  background: white;
-  border-radius: 2px;
-  padding: 0.5rem;
-  padding-top: 0px;
-}
-body {
-  /*
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  */
-}
+
+
 th {
   min-width: 100px;
   min-height: 50px;
@@ -54,8 +39,15 @@ table {
   position: relative;
 }
 
-.fixed {
-  position: sticky;
-  left: 0;
-  background: white; /* Ensure the background is white so content under it doesn't show through */
+tr.data-table-row:hover {
+  background-color: #EEF2F6;
+  color: black;
+}
+
+td.mark {
+  border: 5px solid white
+}
+
+td.mark:hover {
+  border: 0px solid white;
 }
