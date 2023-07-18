@@ -40,7 +40,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
               <FormLabel m="0" ml="4">
                 Similarity:
               </FormLabel>
-              <Box className="ml-2 w-[200px]">
+              <Box w={200} ml={2}>
                 <Slider
                   aria-label="slider-ex-1"
                   defaultValue={networkFilter.minSimilarity}
