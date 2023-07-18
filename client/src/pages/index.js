@@ -2,10 +2,10 @@ import DataTable from "@/components/dataTable";
 import DataTableFilter from "@/components/dataTableFilter";
 import DetailTable from "@/components/detailTable";
 import Graph from "@/data/graphs.json";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Footer, Header } from "@/components/layout";
-import { Box, Container, Center, Flex } from "@chakra-ui/react";
+import { Box, Center, Container, Flex } from "@chakra-ui/react";
 
 Graph.graphs.forEach((x) => {
   x.maxSimilarity = 0;
@@ -19,13 +19,13 @@ Graph.graphs.forEach((x) => {
 export default function Home() {
   const [selectedGraph, setSelectedGraph] = useState(null);
   const [networkFilter, setNetworkFilter] = useState({
-    isFish: true,
-    minSimilarity: 0.5,
+    isFish: false,
+    minSimilarity: 0.2,
     minRevenue: 0,
   });
   const [sourceFilter, setSourceFilter] = useState({
-    isFish: true,
-    minSimilarity: 0.5,
+    isFish: false,
+    minSimilarity: 0.8,
     minRevenue: 0,
   });
   const graphOverviewData = useMemo(() => {
@@ -45,10 +45,19 @@ export default function Home() {
   return (
     <>
       <Header />
-      <Container maxW="full" px={4}  >
-        <Flex w={"full"} dir="column" gap={4} >
-          <Box w={"fit-content"} p={4} bgColor={"white"} borderRadius={"md"} shadow={"sm"}>
-            <DataTableFilter setNetworkFilter={setNetworkFilter}></DataTableFilter>
+      <Container maxW="full" px={4}>
+        <Flex w={"full"} dir="column" gap={4}>
+          <Box
+            w={"fit-content"}
+            p={4}
+            bgColor={"white"}
+            borderRadius={"md"}
+            shadow={"sm"}
+          >
+            <DataTableFilter
+              networkFilter={networkFilter}
+              setNetworkFilter={setNetworkFilter}
+            />
             <Box minW={100} h={"82vh"} overflow={"auto"} mt={4}>
               <DataTable
                 data={graphOverviewData}
@@ -57,19 +66,26 @@ export default function Home() {
               />
             </Box>
           </Box>
-          <Box w={"full"} p={4} bgColor={"white"} borderRadius={"md"} shadow={"sm"} overflowX={"hidden"}>
-            <DataTableFilter setNetworkFilter={setSourceFilter}></DataTableFilter>
+          <Box
+            w={"full"}
+            p={4}
+            bgColor={"white"}
+            borderRadius={"md"}
+            shadow={"sm"}
+            overflowX={"hidden"}
+          >
+            <DataTableFilter
+              networkFilter={sourceFilter}
+              setNetworkFilter={setSourceFilter}
+            />
             <Box minW={100} h={"82vh"} overflow={"hidden"} mt={4}>
-
               {selectedGraph !== null ? (
                 <DetailTable
                   data={Graph.graphs[selectedGraph - 1]}
                   filter={sourceFilter}
                 ></DetailTable>
               ) : (
-                <Center h="full">
-                  Please Select the Network
-                </Center>
+                <Center h="full">Please Select the Network</Center>
               )}
             </Box>
           </Box>

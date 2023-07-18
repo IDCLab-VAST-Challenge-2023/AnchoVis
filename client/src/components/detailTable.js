@@ -126,7 +126,7 @@ export default function detailTable({ data, filter }) {
           </Tbody>
         </Table>
         <Box
-          pt={2}
+          py={2}
           bgColor={"white"}
           style={{ position: "sticky", bottom: 0 }}
           w="fit-content"

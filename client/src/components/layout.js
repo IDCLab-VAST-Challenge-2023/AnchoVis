@@ -20,7 +20,7 @@ const Header = () => {
           아 회 먹고싶다 시마아지 먹고싶다
         </Heading>
       </Flex>
-      <Link href="https://github.com/jason-choi/gleaner" isExternal>
+      <Link href="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3" isExternal>
         <Button variant={"layout"} leftIcon={<AiFillGithub />}>
           GitHub
         </Button>
@@ -94,22 +94,22 @@ const Footer = () => {
               Myeongwon Jung
             </Text>
           </Link>
-          <Link href="https://github.com/jjmmwon" isExternal>
+          <Link href="https://github.com/sth49" isExternal>
             <Text variant={"layout"} fontSize="sm">
               Donghee Hong
             </Text>
           </Link>
-          <Link href="https://github.com/jjmmwon" isExternal>
+          <Link href="https://github.com/st42597" isExternal>
             <Text variant={"layout"} fontSize="sm">
               Seonghyeon Cho
             </Text>
           </Link>
-          <Link href="https://github.com/jjmmwon" isExternal>
+          <Link href="https://github.com/jason-choi" isExternal>
             <Text variant={"layout"} fontSize="sm">
               Jiwon Choi
             </Text>
           </Link>
-          <Link href="https://github.com/jjmmwon" isExternal>
+          <Link href="https://github.com/e-" isExternal>
             <Text variant={"layout"} fontSize="sm">
               Jaemin Jo
             </Text>
