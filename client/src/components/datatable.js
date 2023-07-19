@@ -135,7 +135,7 @@ export default function DataTable({
             <TableHeader
               w={100}
               label="Average Revenue"
-              columnKey={"revenue"}
+              columnKey={"average_revenue"}
               networkFilter={networkFilter}
               setNetworkFilter={setNetworkFilter}
               selectedFilter={selectedFilter}
@@ -171,7 +171,7 @@ export default function DataTable({
                       defaultValue={networkFilter[selectedFilter]}
                       min={0}
                       max={sliderValues[selectedFilter][2]}
-                      step={0.01}
+                      step={sliderValues[selectedFilter][2] / 100}
                       onChange={(x) => {
                         // set minSimilarity with debounce
                         debounce(
@@ -192,7 +192,7 @@ export default function DataTable({
                         color="white"
                         placement="top"
                         isOpen={showTooltip1}
-                        label={format(".2f")(networkFilter[selectedFilter][0])}
+                        label={format(".2~s")(networkFilter[selectedFilter][0])}
                       >
                         <RangeSliderThumb
                           index={0}
@@ -206,7 +206,7 @@ export default function DataTable({
                         color="white"
                         placement="top"
                         isOpen={showTooltip2}
-                        label={format(".2f")(networkFilter[selectedFilter][1])}
+                        label={format(".2~s")(networkFilter[selectedFilter][1])}
                       >
                         <RangeSliderThumb
                           index={1}
@@ -261,7 +261,7 @@ const keyLabel = {
   id: "ID",
   fisheries: "# of Fisheries",
   similarity: "Max Similarity",
-  revenue: "Average Revenue",
+  average_revenue: "Average Revenue",
   num_nodes: "# of Nodes",
   num_links: "# of Links",
 };

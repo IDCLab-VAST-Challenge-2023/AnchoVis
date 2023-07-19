@@ -26,6 +26,11 @@ const MAX_REVENUE = Graph.graphs.reduce((acc, x) => {
   if (x.average_revenue > acc) return x.average_revenue;
   return acc;
 }, 0);
+const MIN_AVERAGE_REVENUE = 0;
+const MAX_AVERAGE_REVENUE = Graph.graphs.reduce((acc, x) => {
+  if (x.average_revenue > acc) return x.average_revenue;
+  return acc;
+}, 0);
 const MIN_NUM_NODES = 3;
 const MAX_NUM_NODES = Math.max(
   ...Graph.graphs.map((x) => x.graph.nodes.length)
@@ -37,37 +42,50 @@ const MAX_NUM_LINKS = Math.max(
 
 
 export const sliderValues = {
-  fisheries : [0, MIN_FISHERIES, MAX_FISHERIES],
+  fisheries: [0, MIN_FISHERIES, MAX_FISHERIES],
   similarity: [0, MIN_SIMILARITY, MAX_SIMILARITY],
+  average_revenue: [0, MIN_AVERAGE_REVENUE, MAX_AVERAGE_REVENUE],
   revenue: [0, MIN_REVENUE, MAX_REVENUE],
   num_nodes: [0, MIN_NUM_NODES, MAX_NUM_NODES],
   num_links: [0, MIN_NUM_LINKS, MAX_NUM_LINKS],
 }
 
-
+const defaultNetworkFilter = {
+  fisheries: [MIN_FISHERIES, MAX_FISHERIES],
+  similarity: [MIN_SIMILARITY, MAX_SIMILARITY],
+  revenue: [MIN_REVENUE, MAX_REVENUE],
+  average_revenue: [MIN_AVERAGE_REVENUE, MAX_AVERAGE_REVENUE],
+  num_nodes: [MIN_NUM_NODES, MAX_NUM_NODES],
+  num_links: [MIN_NUM_LINKS, MAX_NUM_LINKS],
+  sortBy: "id", // id, fisheries, similarity, revenue, num_nodes, num_links
+  sortOrder: "asc", // asc, desc
+}
 // find maxSimilarity and memo to x.maxSimilarity
 
 export default function Home() {
   const [selectedGraph, setSelectedGraph] = useState(null);
-  const [networkFilter, setNetworkFilter] = useState({
-    fisheries: [MIN_FISHERIES, MAX_FISHERIES],
-    similarity: [MIN_SIMILARITY, MAX_SIMILARITY],
-    revenue: [MIN_REVENUE, MAX_REVENUE],
-    num_nodes: [MIN_NUM_NODES, MAX_NUM_NODES],
-    num_links: [MIN_NUM_LINKS, MAX_NUM_LINKS],
-    sortBy: "id", // id, fisheries, similarity, revenue, num_nodes, num_links
-    sortOrder: "asc", // asc, desc
-  });
+  const [networkFilter, setNetworkFilter] = useState(defaultNetworkFilter);
   const [sourceFilter, setSourceFilter] = useState({
     isFish: false,
-    similarity: [MIN_SIMILARITY, MAX_SIMILARITY],
+    similarity: [0.5, MAX_SIMILARITY],
     revenue: [MIN_REVENUE, MAX_REVENUE],
+    country: "",
+    sortBy: null,
+    sortOrder: "asc",
   });
+  const resetNetworkFilter = () => {
+    setNetworkFilter(defaultNetworkFilter)
+  }
+
+
+
+
   const graphOverviewData = useMemo(() => {
     const {
       fisheries,
       similarity,
       revenue,
+      average_revenue,
       num_nodes,
       num_links,
       sortBy,
@@ -75,22 +93,24 @@ export default function Home() {
     } = networkFilter;
     const filteredGraphs = Graph.graphs
       .filter(
-        ({
-          num_ocean_nodes,
-          maxSimilarity,
-          average_revenue,
-          graph: { nodes, links },
-        }) =>
-          num_ocean_nodes >= fisheries[0] &&
-          num_ocean_nodes <= fisheries[1] &&
-          maxSimilarity >= similarity[0] &&
-          maxSimilarity <= similarity[1] &&
-          average_revenue >= revenue[0] &&
-          average_revenue <= revenue[1] &&
-          nodes.length >= num_nodes[0] &&
-          nodes.length <= num_nodes[1] &&
-          links.length >= num_links[0] &&
-          links.length <= num_links[1]
+        (g) => {
+          const {
+            num_ocean_nodes,
+            maxSimilarity,
+            graph: { nodes, links },
+          } = g;
+          return (
+            num_ocean_nodes >= fisheries[0] &&
+            num_ocean_nodes <= fisheries[1] &&
+            maxSimilarity >= similarity[0] &&
+            maxSimilarity <= similarity[1] &&
+            g.average_revenue >= average_revenue[0] &&
+            g.average_revenue <= average_revenue[1] &&
+            nodes.length >= num_nodes[0] &&
+            nodes.length <= num_nodes[1] &&
+            links.length >= num_links[0] &&
+            links.length <= num_links[1])
+        }
       )
       .sort((a, b) => {
         const sortFunc =
@@ -102,7 +122,7 @@ export default function Home() {
             return sortFunc(a.num_ocean_nodes, b.num_ocean_nodes);
           case "similarity":
             return sortFunc(a.maxSimilarity, b.maxSimilarity);
-          case "revenue":
+          case "average_revenue":
             return sortFunc(a.average_revenue, b.average_revenue);
           case "num_nodes":
             return sortFunc(a.graph.nodes.length, b.graph.nodes.length);
@@ -134,6 +154,7 @@ export default function Home() {
                 setSelectGraph={setSelectedGraph}
                 networkFilter={networkFilter}
                 setNetworkFilter={setNetworkFilter}
+                resetNetworkFilter={resetNetworkFilter}
               />
             </Box>
           </Box>
@@ -145,21 +166,22 @@ export default function Home() {
             shadow={"sm"}
             overflowX={"hidden"}
           >
-            <DataTableFilter
-              networkFilter={sourceFilter}
-              setNetworkFilter={setSourceFilter}
-            />
-            <Divider mt={4} />
-            <Box minW={100} h={"77vh"} overflow={"hidden"} mt={4}>
+            <Box minW={100} h={"77vh"} overflow={"hidden"}>
+              
               {selectedGraph !== null ? (
                 <DetailTable
                   data={Graph.graphs[selectedGraph - 1]}
-                  filter={sourceFilter}
+                  sourceFilter={sourceFilter}
+                  setSourceFilter={setSourceFilter}
                 ></DetailTable>
               ) : (
                 <Center h="full">Please Select the Network</Center>
               )}
             </Box>
+            <DataTableFilter
+                networkFilter={sourceFilter}
+                setNetworkFilter={setSourceFilter}
+              />
           </Box>
         </Flex>
       </Container>
