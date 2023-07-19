@@ -109,11 +109,6 @@ const Footer = () => {
               Jiwon Choi
             </Text>
           </Link>
-          <Link href="https://github.com/e-" isExternal>
-            <Text variant={"layout"} fontSize="sm">
-              Jaemin Jo
-            </Text>
-          </Link>
         </Flex>
       </Flex>
     </Flex>
