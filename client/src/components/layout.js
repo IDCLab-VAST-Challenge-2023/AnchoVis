@@ -9,15 +9,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AiFillGithub } from "react-icons/ai";
-import { GiFishing } from "react-icons/gi";
+import { GiCirclingFish } from "react-icons/gi";
 
 const Header = () => {
   return (
     <Flex align="center" justifyContent="space-between" px={4} py={2}>
       <Flex alignItems={"center"}>
-        <Icon as={GiFishing} mr={2} size="xl" color="gray.500" />
+        <Icon as={GiCirclingFish} mr={2} boxSize={7} color="gray.500" />
         <Heading size="md" variant={"layout"} alignItems="center">
-          아 회 먹고싶다 시마아지 먹고싶다
+          AnchoVis
         </Heading>
       </Flex>
       <Link href="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3" isExternal>

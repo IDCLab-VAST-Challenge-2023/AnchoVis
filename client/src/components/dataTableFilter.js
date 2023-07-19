@@ -1,8 +1,17 @@
 import {
-  Box, Divider,
-  FormLabel, HStack, Heading, Slider, SliderFilledTrack,
-  SliderThumb, SliderTrack,
-  Stack, Switch, Tooltip
+  Box,
+  Divider,
+  FormLabel,
+  HStack,
+  Heading,
+  Input,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Stack,
+  Switch,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -21,10 +30,8 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
   const [showTooltip1, setShowTooltip1] = useState(false);
   return (
     <HStack w={"full"}>
-      <Heading as="h3" size={"sm"}>Filter by</Heading>
-      <Divider orientation="vertical" h={5} />
       <Stack align="center" direction="row">
-        <FormLabel m="0">isFish</FormLabel>
+        <FormLabel m="0">Show Fisheries Only</FormLabel>
         <Switch
           size="md"
           defaultChecked={networkFilter.isFish}
@@ -32,16 +39,12 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             setNetworkFilter({
               ...networkFilter,
               isFish: !networkFilter.isFish,
-            })
+            });
           }}
         />
-      </Stack>
-      
-      <Stack align="center" direction="row">
-        <FormLabel m="0">
-          Similarity
-        </FormLabel>
-        <Box w={200} ml={2}>
+
+        <FormLabel m="0">Max Pair Similarity Range</FormLabel>
+        <Box w={150} ml={2}>
           <Slider
             aria-label="slider-ex-1"
             defaultValue={networkFilter.minSimilarity}
@@ -51,7 +54,10 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             onChange={(x) => {
               // set minSimilarity with debounce
               setTmpSimilarity(x);
-              debounce(setNetworkFilter, 650)({
+              debounce(
+                setNetworkFilter,
+                650
+              )({
                 ...networkFilter,
                 minSimilarity: x,
               });
@@ -60,7 +66,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             onMouseLeave={() => setShowTooltip1(false)}
           >
             <SliderTrack>
-              <SliderFilledTrack w="200" />
+              <SliderFilledTrack w="150" />
             </SliderTrack>
             <Tooltip
               hasArrow
@@ -74,8 +80,50 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             </Tooltip>
           </Slider>
         </Box>
-      </Stack>
 
+        <FormLabel m="0">Total Revenue Range</FormLabel>
+        <Box w={150} ml={2}>
+          <Slider
+            aria-label="slider-ex-1"
+            defaultValue={networkFilter.minSimilarity}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(x) => {
+              // set minSimilarity with debounce
+              setTmpSimilarity(x);
+              debounce(
+                setNetworkFilter,
+                650
+              )({
+                ...networkFilter,
+                minSimilarity: x,
+              });
+            }}
+            onMouseEnter={() => setShowTooltip1(true)}
+            onMouseLeave={() => setShowTooltip1(false)}
+          >
+            <SliderTrack>
+              <SliderFilledTrack w="150" />
+            </SliderTrack>
+            <Tooltip
+              hasArrow
+              bg="blue.500"
+              color="white"
+              placement="top"
+              isOpen={showTooltip1}
+              label={tmpSimilarity}
+            >
+              <SliderThumb />
+            </Tooltip>
+          </Slider>
+        </Box>
+
+        <FormLabel m="0">Company Nationality</FormLabel>
+        <Box w={200} ml={2}>
+          <Input placeholder="Search Natioanlity" />
+        </Box>
+      </Stack>
     </HStack>
   );
 }

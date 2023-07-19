@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Center,
   Flex,
   Icon,
@@ -13,10 +14,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FaFish, FaInfoCircle } from "react-icons/fa";
+import { FaFilter, FaFish, FaInfoCircle, FaSortNumericDown } from "react-icons/fa";
 
 import { schemeCategory10 } from "d3-scale-chromatic";
 import { format } from "d3-format";
+import DataTableFilter from "./dataTableFilter";
 
 const colorMap = {
   "Beneficial Owner": schemeCategory10[0],
@@ -44,11 +46,76 @@ const jcd = (a, b) => {
   return intersection.size / union.size;
 };
 
-export default function detailTable({ data, filter, tmp }) {
+function TableHeader({
+  w,
+  l,
+  label,
+  columnKey,
+  sourceFilter,
+  setSourceFilter,
+  selectedFilter,
+  setSelectedFilter,
+  unSelectSource,
+}) {
+  return (
+    <Th w={w} style={{ position: "sticky", left: l }}>
+      <Box mb={2}>{label}</Box>
+      <Flex w="full" justify="space-between">
+        <Button
+          mb={2}
+          variant={sourceFilter.sortBy === columnKey ? "solid" : "outline"}
+          colorScheme="blue"
+          size="xs"
+          onClick={() => {
+            unSelectSource();
+            if (sourceFilter.sortBy === columnKey) {
+              setSourceFilter({
+                ...sourceFilter,
+                sortBy: null,
+                sortOrder: "asc",
+              });
+            } else {
+              setSourceFilter({
+                ...sourceFilter,
+                sortBy: columnKey,
+                sortOrder: "desc",
+              });
+            }
+          }}
+        >
+          <Icon as={FaSortNumericDown} />
+        </Button>
+        <Button
+          mb={2}
+          variant={selectedFilter === columnKey ? "solid" : "outline"}
+          colorScheme="blue"
+          size="xs"
+          onClick={() => {
+            if (selectedFilter === columnKey) {
+              setSelectedFilter(null);
+            } else {
+              setSelectedFilter(columnKey);
+            }
+          }}
+        >
+          <Icon as={FaFilter} />
+        </Button>
+      </Flex>
+    </Th>
+  );
+}
+
+export default function detailTable({ data, sourceFilter, setSourceFilter }) {
   const [selectedSource, setSelectedSource] = useState(null);
   const [selectedIdx, setSelectedIdx] = useState(-1);
+  const [selectedFilter, setSelectedFilter] = useState(null);
 
-  const { srcInfo, srcList, trgList, linkType } = useMemo(() => {
+  const unSelectSource = () => {
+    setSelectedSource(null);
+    setSelectedIdx(-1);
+  };
+
+  const a = useMemo(() => {
     const srcInfo = {};
     const src = {};
     const trg = {};
@@ -59,9 +126,12 @@ export default function detailTable({ data, filter, tmp }) {
     data.graph.links.forEach((link) => {
       const source = srcInfo[link.source];
       if (
-        source.is_ocean >= 1 * filter.isFish &&
-        source.similarity >= filter.minSimilarity &&
-        source.total_revenue >= filter.minRevenue
+        source.is_ocean >= 1 * sourceFilter.isFish &&
+        source.similarity >= sourceFilter.similarity[0] &&
+        source.similarity <= sourceFilter.similarity[1] &&
+        source.total_revenue >= sourceFilter.revenue[0] &&
+        source.total_revenue <= sourceFilter.revenue[1] &&
+        source.country.includes(sourceFilter.country)
       ) {
         src[link.source] = (src[link.source] || 0) + 1;
         trg[link.target] = (trg[link.target] || 0) + 1;
@@ -91,23 +161,36 @@ export default function detailTable({ data, filter, tmp }) {
         ),
       ];
     } else {
-      setSelectedIdx(-1);
-      setSelectedSource(null);
+      unSelectSource();
+    }
+
+    if (sourceFilter.sortBy !== null) {
+      console.log(123123)
+      srcList.sort((a, b) => {
+        const sortFunc = sourceFilter.sortOrder === "asc" ? (x, y) => x - y : (x, y) => y - x;
+        if (sourceFilter.sortBy === "similarity") {
+          return sortFunc(srcInfo[a[0]].similarity, srcInfo[b[0]].similarity);
+        } else if (sourceFilter.sortBy === "revenue") {
+          return sortFunc(srcInfo[a[0]].total_revenue, srcInfo[b[0]].total_revenue);
+        }
+      });
     }
     return { srcInfo, srcList, trgList, linkType };
-  }, [data, filter, selectedSource]);
-
+  }, [data, sourceFilter, selectedSource]);
   const matrixValue = useMemo(
-    () =>
-      srcList.map((src) =>
+    () => {
+      const { srcInfo, srcList, trgList, linkType } = a;
+      return (srcList.map((src) =>
         trgList.map((trg) => ({
           type: linkType[[src[0], trg[0]]],
           src: src[0],
           trg: trg[0],
         }))
-      ),
-    [srcList, trgList, linkType]
+      ))
+    },
+    [a]
   );
+  const { srcInfo, srcList, trgList, linkType } = a;
 
   function getSrcIndex(srcValue) {
     return matrixValue.findIndex((row) => row[0]?.src === srcValue);
@@ -153,9 +236,20 @@ export default function detailTable({ data, filter, tmp }) {
           </Thead>
           <Tbody zIndex={1}>
             {srcList
-              .filter((x) => srcInfo[x[0]].is_ocean >= 1 * filter.isFish)
-              .filter((x) => srcInfo[x[0]].similarity >= filter.minSimilarity)
-              .filter((x) => srcInfo[x[0]].total_revenue >= filter.minRevenue)
+              .filter((x) => srcInfo[x[0]].is_ocean >= 1 * sourceFilter.isFish)
+              .filter(
+                (x) => srcInfo[x[0]].similarity >= sourceFilter.similarity[0]
+              )
+              .filter(
+                (x) => srcInfo[x[0]].similarity <= sourceFilter.similarity[1]
+              )
+              .filter(
+                (x) => srcInfo[x[0]].total_revenue >= sourceFilter.revenue[0]
+              )
+              .filter(
+                (x) => srcInfo[x[0]].total_revenue <= sourceFilter.revenue[1]
+              )
+              .filter((x) => (srcInfo[x[0]].country.includes(sourceFilter.country)))
               .map((x, i) => {
                 x = srcInfo[x[0]];
 
