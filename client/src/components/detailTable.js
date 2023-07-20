@@ -14,11 +14,15 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FaFilter, FaFish, FaInfoCircle, FaSortNumericDown } from "react-icons/fa";
+import {
+  FaFilter,
+  FaFish,
+  FaInfoCircle,
+  FaSortNumericDown,
+} from "react-icons/fa";
 
-import { schemeCategory10 } from "d3-scale-chromatic";
 import { format } from "d3-format";
-import DataTableFilter from "./detailTableFilter";
+import { schemeCategory10 } from "d3-scale-chromatic";
 
 const colorMap = {
   "Beneficial Owner": schemeCategory10[0],
@@ -165,31 +169,32 @@ export default function detailTable({ data, sourceFilter, setSourceFilter }) {
     }
 
     if (sourceFilter.sortBy !== null) {
-      console.log(123123)
+      console.log(123123);
       srcList.sort((a, b) => {
-        const sortFunc = sourceFilter.sortOrder === "asc" ? (x, y) => x - y : (x, y) => y - x;
+        const sortFunc =
+          sourceFilter.sortOrder === "asc" ? (x, y) => x - y : (x, y) => y - x;
         if (sourceFilter.sortBy === "similarity") {
           return sortFunc(srcInfo[a[0]].similarity, srcInfo[b[0]].similarity);
         } else if (sourceFilter.sortBy === "revenue") {
-          return sortFunc(srcInfo[a[0]].total_revenue, srcInfo[b[0]].total_revenue);
+          return sortFunc(
+            srcInfo[a[0]].total_revenue,
+            srcInfo[b[0]].total_revenue
+          );
         }
       });
     }
     return { srcInfo, srcList, trgList, linkType };
   }, [data, sourceFilter, selectedSource]);
-  const matrixValue = useMemo(
-    () => {
-      const { srcInfo, srcList, trgList, linkType } = a;
-      return (srcList.map((src) =>
-        trgList.map((trg) => ({
-          type: linkType[[src[0], trg[0]]],
-          src: src[0],
-          trg: trg[0],
-        }))
-      ))
-    },
-    [a]
-  );
+  const matrixValue = useMemo(() => {
+    const { srcInfo, srcList, trgList, linkType } = a;
+    return srcList.map((src) =>
+      trgList.map((trg) => ({
+        type: linkType[[src[0], trg[0]]],
+        src: src[0],
+        trg: trg[0],
+      }))
+    );
+  }, [a]);
   const { srcInfo, srcList, trgList, linkType } = a;
 
   function getSrcIndex(srcValue) {
@@ -202,6 +207,7 @@ export default function detailTable({ data, sourceFilter, setSourceFilter }) {
     if (selectedIdx >= 0) {
       rowRef.current[0].scrollIntoView({
         block: "center",
+        behavior: "smooth",
       });
     }
   }, [selectedIdx]);
@@ -249,7 +255,9 @@ export default function detailTable({ data, sourceFilter, setSourceFilter }) {
               .filter(
                 (x) => srcInfo[x[0]].total_revenue <= sourceFilter.revenue[1]
               )
-              .filter((x) => (srcInfo[x[0]].country.includes(sourceFilter.country)))
+              .filter((x) =>
+                srcInfo[x[0]].country.includes(sourceFilter.country)
+              )
               .map((x, i) => {
                 x = srcInfo[x[0]];
 
@@ -329,7 +337,7 @@ export default function detailTable({ data, sourceFilter, setSourceFilter }) {
                           }}
                           key={`matrix${i}${j}`}
                         >
-                          { }
+                          {}
                         </Td>
                       );
                     })}

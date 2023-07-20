@@ -8,7 +8,6 @@ import {
   RangeSliderFilledTrack,
   RangeSliderThumb,
   RangeSliderTrack,
-  Slider,
   Table,
   Tbody,
   Td,
@@ -246,7 +245,7 @@ export default function DataTable({
                           } else if (selectedFilter === "num_links") {
                             return setNumEdgesTooltip;
                           }
-                        }
+                        };
                         hookFilter(selectedFilter)(x);
                         debounce(
                           setNetworkFilter,
@@ -272,13 +271,15 @@ export default function DataTable({
                             : selectedFilter === "similarity"
                             ? ".2~f"
                             : "d"
-                        )((selectedFilter === "similarity"
-                        ? similarityTooltip
-                        : selectedFilter === "average_revenue"
-                        ? revenueTooltip
-                        : selectedFilter === "num_nodes"
-                        ? numNodesTooltip
-                        : numEdgesTooltip)[0])}
+                        )(
+                          (selectedFilter === "similarity"
+                            ? similarityTooltip
+                            : selectedFilter === "average_revenue"
+                            ? revenueTooltip
+                            : selectedFilter === "num_nodes"
+                            ? numNodesTooltip
+                            : numEdgesTooltip)[0]
+                        )}
                       >
                         <RangeSliderThumb
                           index={0}
@@ -298,13 +299,15 @@ export default function DataTable({
                             : selectedFilter === "similarity"
                             ? ".2~f"
                             : "d"
-                        )((selectedFilter === "similarity"
-                        ? similarityTooltip
-                        : selectedFilter === "average_revenue"
-                        ? revenueTooltip
-                        : selectedFilter === "num_nodes"
-                        ? numNodesTooltip
-                        : numEdgesTooltip)[1])}
+                        )(
+                          (selectedFilter === "similarity"
+                            ? similarityTooltip
+                            : selectedFilter === "average_revenue"
+                            ? revenueTooltip
+                            : selectedFilter === "num_nodes"
+                            ? numNodesTooltip
+                            : numEdgesTooltip)[1]
+                        )}
                       >
                         <RangeSliderThumb
                           index={1}

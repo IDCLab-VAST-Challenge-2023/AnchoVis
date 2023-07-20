@@ -4,7 +4,6 @@ import {
   Heading,
   Icon,
   Link,
-  SimpleGrid,
   Spacer,
   Text,
 } from "@chakra-ui/react";
@@ -20,7 +19,10 @@ const Header = () => {
           AnchoVis
         </Heading>
       </Flex>
-      <Link href="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3" isExternal>
+      <Link
+        href="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3"
+        isExternal
+      >
         <Button variant={"layout"} leftIcon={<AiFillGithub />}>
           GitHub
         </Button>
@@ -77,11 +79,7 @@ const Footer = () => {
         alignItems="end"
       >
         <Link href="https://vast-challenge.github.io/2023/" isExternal>
-          <Text
-            variant={"layout"}
-            fontWeight={600}
-            fontSize="xl"
-          >
+          <Text variant={"layout"} fontWeight={600} fontSize="xl">
             VAST Challenge 2023
           </Text>
         </Link>

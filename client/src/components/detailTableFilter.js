@@ -4,19 +4,16 @@ import {
   Button,
   Flex,
   FormLabel,
-  HStack,
   Icon,
   Input,
   RangeSlider,
   RangeSliderFilledTrack,
   RangeSliderThumb,
   RangeSliderTrack,
-  Stack,
-  Switch,
-  Tooltip,
+  Tooltip
 } from "@chakra-ui/react";
 import { format } from "d3-format";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaFish } from "react-icons/fa";
 
 const debounce = (func, delay) => {
@@ -36,7 +33,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
   useEffect(() => {
     setSimilarityTooltip(networkFilter.similarity);
     setRevenueTooltip(networkFilter.revenue);
-  }, [networkFilter]);
+  }, []);
 
   const handleShowMinSimilarityTooltip = useCallback(() => {
     setShowMinSimilarityTooltip(true);

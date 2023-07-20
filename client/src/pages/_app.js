@@ -1,16 +1,16 @@
-import '@/styles/globals.css'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import '@fontsource/rajdhani';
-import 'pretendard/dist/web/variable/pretendardvariable.css';
+import "@/styles/globals.css";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import "@fontsource/rajdhani";
+import "pretendard/dist/web/variable/pretendardvariable.css";
 const theme = extendTheme({
   fonts: {
-    heading: 'Pretendard',
-    body: 'Pretendard',
+    heading: "Pretendard",
+    body: "Pretendard",
   },
   styles: {
     global: {
       body: {
-        bg: 'gray.50',
+        bg: "gray.50",
       },
     },
   },
@@ -18,7 +18,7 @@ const theme = extendTheme({
     Text: {
       variants: {
         layout: {
-          color: 'gray.500',
+          color: "gray.500",
         },
       },
     },
@@ -26,27 +26,27 @@ const theme = extendTheme({
       variants: {
         layout: {
           fontWeight: 900,
-          color: 'gray.500',
+          color: "gray.500",
         },
         section: {
-          fontSize: 'sm',
+          fontSize: "sm",
           fontWeight: 700,
-          color: 'gray.700',
+          color: "gray.700",
         },
       },
     },
     Button: {
       variants: {
         layout: {
-          color: 'gray.500',
-          backgroundColor: 'transparent',
+          color: "gray.500",
+          backgroundColor: "transparent",
         },
       },
     },
     Link: {
       baseStyle: {
         _hover: {
-          textDecoration: 'none',
+          textDecoration: "none",
         },
       },
     },
