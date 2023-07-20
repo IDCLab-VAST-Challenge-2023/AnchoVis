@@ -31,7 +31,7 @@ const Header = () => {
 
 const Footer = () => {
   return (
-    <Flex style={{ position: "fixed", bottom: 0, left: 0 }}>
+    <Flex w="full" style={{ position: "fixed", bottom: 0, left: 0 }}>
       <Flex
         mt="auto"
         align={"center"}
