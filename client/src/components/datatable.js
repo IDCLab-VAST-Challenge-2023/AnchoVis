@@ -108,9 +108,9 @@ export default function DataTable({
 
   useEffect(() => {
     setSimilarityTooltip(networkFilter.similarity);
-    setRevenueTooltip(networkFilter.revenue);
-    setNumNodesTooltip(networkFilter.numNodes);
-    setNumEdgesTooltip(networkFilter.numEdges);
+    setRevenueTooltip(networkFilter.average_revenue);
+    setNumNodesTooltip(networkFilter.num_nodes);
+    setNumEdgesTooltip(networkFilter.num_links);
   }, []);
 
   return (
@@ -225,7 +225,7 @@ export default function DataTable({
                       value={
                         selectedFilter === "similarity"
                           ? similarityTooltip
-                          : selectedFilter === "revenue"
+                          : selectedFilter === "average_revenue"
                           ? revenueTooltip
                           : selectedFilter === "num_nodes"
                           ? numNodesTooltip
@@ -236,10 +236,10 @@ export default function DataTable({
                       step={sliderValues[selectedFilter][2] / 100}
                       onChange={(x) => {
                         // set minSimilarity with debounce
-                        function filter(selectedFilter) {
+                        const hookFilter = (selectedFilter) => {
                           if (selectedFilter === "similarity") {
                             return setSimilarityTooltip;
-                          } else if (selectedFilter === "revenue") {
+                          } else if (selectedFilter === "average_revenue") {
                             return setRevenueTooltip;
                           } else if (selectedFilter === "num_nodes") {
                             return setNumNodesTooltip;
@@ -247,7 +247,7 @@ export default function DataTable({
                             return setNumEdgesTooltip;
                           }
                         }
-                        filter(selectedFilter)(x);
+                        hookFilter(selectedFilter)(x);
                         debounce(
                           setNetworkFilter,
                           650
@@ -267,14 +267,14 @@ export default function DataTable({
                         placement="top"
                         isOpen={showTooltip1}
                         label={format(
-                          selectedFilter === "revenue"
-                            ? "$.2~s"
+                          selectedFilter === "average_revenue"
+                            ? ".2~s"
                             : selectedFilter === "similarity"
                             ? ".2~f"
                             : "d"
                         )((selectedFilter === "similarity"
                         ? similarityTooltip
-                        : selectedFilter === "revenue"
+                        : selectedFilter === "average_revenue"
                         ? revenueTooltip
                         : selectedFilter === "num_nodes"
                         ? numNodesTooltip
@@ -293,14 +293,14 @@ export default function DataTable({
                         placement="top"
                         isOpen={showTooltip2}
                         label={format(
-                          selectedFilter === "revenue"
-                            ? "$.2~s"
+                          selectedFilter === "average_revenue"
+                            ? ".2~s"
                             : selectedFilter === "similarity"
                             ? ".2~f"
                             : "d"
                         )((selectedFilter === "similarity"
                         ? similarityTooltip
-                        : selectedFilter === "revenue"
+                        : selectedFilter === "average_revenue"
                         ? revenueTooltip
                         : selectedFilter === "num_nodes"
                         ? numNodesTooltip
