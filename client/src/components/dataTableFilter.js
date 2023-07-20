@@ -1,9 +1,11 @@
 import { sliderValues } from "@/pages";
 import {
   Box,
+  Button,
   Flex,
   FormLabel,
   HStack,
+  Icon,
   Input,
   RangeSlider,
   RangeSliderFilledTrack,
@@ -15,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { format } from "d3-format";
 import { useState, useCallback, useEffect } from "react";
+import { FaFish } from "react-icons/fa";
 
 const debounce = (func, delay) => {
   let debounceTimer;
@@ -68,10 +71,10 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
   const [showMaxRevenueTooltip, setShowMaxRevenueTooltip] = useState(false);
 
   return (
-    <Flex align="center" direction="row" justify={"space-between"} px={3} mb={2}>
+    <Flex align="center" direction="row" gap={6}  mb={2}>
       <Flex align="center" gap={2}>
-        <FormLabel m="0">Show Fisheries Only</FormLabel>
-        <Switch
+        <FormLabel m="0"></FormLabel>
+        {/* <Switch
           size="md"
           defaultChecked={networkFilter.isFish}
           onChange={() => {
@@ -80,10 +83,25 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
               isFish: !networkFilter.isFish,
             });
           }}
-        />
+        /> */}
+        <Button
+          size="sm"
+          leftIcon={<Icon as={FaFish} />}
+          colorScheme="blue"
+          defaultChecked={networkFilter.isFish}
+          variant={networkFilter.isFish ? "solid" : "outline"}
+          onClick={() => {
+            setNetworkFilter({
+              ...networkFilter,
+              isFish: !networkFilter.isFish,
+            });
+          }}
+        >
+          Show Fisheries Only
+        </Button>
       </Flex>
       <Flex align="center" gap={2}>
-        <FormLabel m="0">Max Pair Similarity Range</FormLabel>
+        <FormLabel m="0">Max Pair Similarity</FormLabel>
         <Box w={150} ml={2}>
           <RangeSlider
             aria-label="Rangeslider-ex-1"
@@ -137,7 +155,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
         </Box>
       </Flex>
       <Flex align="center" gap={2}>
-        <FormLabel m="0">Total Revenue Range</FormLabel>
+        <FormLabel m="0">Total Revenue</FormLabel>
         <Box w={150} ml={2}>
           <RangeSlider
             aria-label="Rangeslider-ex-1"

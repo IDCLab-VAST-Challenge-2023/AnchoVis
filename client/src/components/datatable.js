@@ -99,6 +99,8 @@ export default function DataTable({
   const [showTooltip1, setShowTooltip1] = useState(false);
   const [showTooltip2, setShowTooltip2] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(null);
+  const [ showFisheriesOnly, setShowFisheriesOnly ] = useState(true);
+
   return (
     <Flex direction="column">
       <Table variant="simple" size="sm" p={0} layout="fixed" w={"fit-content"}>
@@ -114,15 +116,50 @@ export default function DataTable({
                 ID
               </Flex>
             </Th>
-            <TableHeader
-              w={100}
-              label={"# of Fisheries"}
-              columnKey={"fisheries"}
-              networkFilter={networkFilter}
-              setNetworkFilter={setNetworkFilter}
-              selectedFilter={selectedFilter}
-              setSelectedFilter={setSelectedFilter}
-            />
+            <Th w={100}>
+              <Box mb={2}>{"# of Fisheries"}</Box>
+              <Flex w="full" justify="space-between">
+                <Button
+                  mb={2}
+                  variant={networkFilter.sortBy === "fisheries" ? "solid" : "outline"}
+                  colorScheme="blue"
+                  size="xs"
+                  onClick={() => {
+                    
+
+                    if (networkFilter.sortBy === "fisheries") {
+                      setNetworkFilter({
+                        ...networkFilter,
+                        sortBy: "id",
+                        sortOrder: "asc",
+                      });
+                    } else {
+                      setNetworkFilter({
+                        ...networkFilter,
+                        sortBy: "fisheries",
+                        sortOrder: "desc",
+                      });
+                    }
+                  }}
+                >
+                  <Icon as={FaSortNumericDown} />
+                </Button>
+                <Button
+                  mb={2}
+                  variant={showFisheriesOnly ? "solid" : "outline"}
+                  colorScheme="blue"
+                  size="xs"
+                  onClick={() => {
+                    setShowFisheriesOnly(!showFisheriesOnly)
+                    setNetworkFilter({
+                      ...networkFilter,
+                      fisheries: [1 * !showFisheriesOnly, networkFilter.fisheries[1]],
+                  })}}
+                >
+                  <Icon as={FaFish} />
+                </Button>
+              </Flex>
+            </Th>
             <TableHeader
               w={110}
               label="Max Similarity"
@@ -192,7 +229,13 @@ export default function DataTable({
                         color="white"
                         placement="top"
                         isOpen={showTooltip1}
-                        label={format(".2~s")(networkFilter[selectedFilter][0])}
+                        label={format(
+                          selectedFilter === "revenue"
+                            ? "$.2~s"
+                            : selectedFilter === "similarity"
+                              ? ".2~f"
+                              : "d"
+                        )(networkFilter[selectedFilter][0])}
                       >
                         <RangeSliderThumb
                           index={0}
@@ -206,7 +249,13 @@ export default function DataTable({
                         color="white"
                         placement="top"
                         isOpen={showTooltip2}
-                        label={format(".2~s")(networkFilter[selectedFilter][1])}
+                        label={format(
+                          selectedFilter === "revenue"
+                            ? "$.2~s"
+                            : selectedFilter === "similarity"
+                              ? ".2~f"
+                              : "d"
+                        )(networkFilter[selectedFilter][1])}
                       >
                         <RangeSliderThumb
                           index={1}
