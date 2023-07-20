@@ -2,7 +2,7 @@
 
 This project is a submission to [Mini-Challenge 3 (MC3)](https://vast-challenge.github.io/2023/MC3.html) of [the Visual Analytics Science and Technology (VAST) Challenge 2023](https://vast-challenge.github.io/2023/index.html).
 
-<img src="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3/assets/64757426/382b35ce-9bd2-4281-8de5-c119c26d7cf5">
+<img src="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3/assets/64757426/e31203f8-e578-47bf-bb4e-b959a2d7e222">
 
 ## Tools and Libraries
 
