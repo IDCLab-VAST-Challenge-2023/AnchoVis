@@ -1,7 +1,7 @@
 # AnchoVis: Visual Analytics for Combating Illegal Fishing by Detecting Anomalous Structures :fishing_pole_and_fish:
 
 This project is a submission to [Mini-Challenge 3 (MC3)](https://vast-challenge.github.io/2023/MC3.html) of [the Visual Analytics Science and Technology (VAST) Challenge 2023](https://vast-challenge.github.io/2023/index.html).
-
+https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3/assets/64757426/4da64b45-0d52-45b4-9375-2cb019325006
 ## Tools and Libraries
 
 - Python
