@@ -64,11 +64,11 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
   }, []);
 
   const [showMinSimiarityTooltip, setShowMinSimilarityTooltip] =
-    useState(false);
+    useState(true);
   const [showMaxSimiarityTooltip, setShowMaxSimilarityTooltip] =
-    useState(false);
-  const [showMinRevenueTooltip, setShowMinRevenueTooltip] = useState(false);
-  const [showMaxRevenueTooltip, setShowMaxRevenueTooltip] = useState(false);
+    useState(true);
+  const [showMinRevenueTooltip, setShowMinRevenueTooltip] = useState(true);
+  const [showMaxRevenueTooltip, setShowMaxRevenueTooltip] = useState(true);
 
   return (
     <Flex align="center" direction="row" gap={6}  mb={2}>
@@ -108,6 +108,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             defaultValue={networkFilter.similarity}
             min={sliderValues.similarity[0]}
             max={sliderValues.similarity[2]}
+            value={similarityTooltip}
             step={0.01}
             onChange={(x) => {
               setSimilarityTooltip(x);
@@ -133,8 +134,6 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             >
               <RangeSliderThumb
                 index={0}
-                onMouseOver={handleShowMinSimilarityTooltip}
-                onMouseLeave={handleHideMinSimilarityTooltip}
               />
             </Tooltip>
             <Tooltip
@@ -147,8 +146,6 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             >
               <RangeSliderThumb
                 index={1}
-                onMouseOver={handleShowMaxSimilarityTooltip}
-                onMouseLeave={handleHideMaxSimilarityTooltip}
               />
             </Tooltip>
           </RangeSlider>
@@ -163,6 +160,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             min={sliderValues.revenue[0]}
             max={sliderValues.revenue[2]}
             step={0.01}
+            value={revenueTooltip}
             onChange={(x) => {
               setRevenueTooltip(x);
               debounce(
@@ -187,8 +185,6 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             >
               <RangeSliderThumb
                 index={0}
-                onMouseOver={handleShowMinRevenueTooltip}
-                onMouseLeave={handleHideMinRevenueTooltip}
               />
             </Tooltip>
             <Tooltip
@@ -201,8 +197,6 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
             >
               <RangeSliderThumb
                 index={1}
-                onMouseOver={handleShowMaxRevenueTooltip}
-                onMouseLeave={handleHideMaxRevenueTooltip}
               />
             </Tooltip>
           </RangeSlider>

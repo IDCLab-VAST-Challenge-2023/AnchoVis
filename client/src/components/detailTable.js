@@ -18,7 +18,7 @@ import { FaFilter, FaFish, FaInfoCircle, FaSortNumericDown } from "react-icons/f
 
 import { schemeCategory10 } from "d3-scale-chromatic";
 import { format } from "d3-format";
-import DataTableFilter from "./dataTableFilter";
+import DataTableFilter from "./detailTableFilter";
 
 const colorMap = {
   "Beneficial Owner": schemeCategory10[0],
@@ -355,21 +355,21 @@ export default function detailTable({ data, sourceFilter, setSourceFilter }) {
                   w={200 + 110 + 95 + 120}
                   style={{ left: 0, position: "sticky" }}
                   verticalAlign={"top"}
-                  fontSize={"sm"}
+                  fontSize={"xs"}
                 >
                   <Box>
                     <Flex gap={2} px={2} align="center">
                       <Box
-                        w={12}
-                        h={6}
+                        w={8}
+                        h={4}
                         bgColor={colorMap["Beneficial Owner"]}
                       ></Box>
                       <Box mr={4}>Beneficial Owner</Box>
                     </Flex>
                     <Flex gap={2} px={2} align="center" my={2}>
                       <Box
-                        w={12}
-                        h={6}
+                        w={8}
+                        h={4}
                         bgColor={colorMap["Company Contacts"]}
                       ></Box>
                       <Box>Company Contacts</Box>

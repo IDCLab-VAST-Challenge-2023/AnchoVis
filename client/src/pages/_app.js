@@ -1,6 +1,7 @@
 import '@/styles/globals.css'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-
+import '@fontsource/rajdhani';
+import 'pretendard/dist/web/variable/pretendardvariable.css';
 const theme = extendTheme({
   fonts: {
     heading: 'Pretendard',

@@ -1,11 +1,14 @@
 import DataTable from "@/components/dataTable";
-import DataTableFilter from "@/components/dataTableFilter";
+import DataTableFilter from "@/components/detailTableFilter";
 import DetailTable from "@/components/detailTable";
 import Graph from "@/data/graphs.json";
 import { useMemo, useState } from "react";
 
 import { Footer, Header } from "@/components/layout";
 import { Box, Center, Container, Divider, Flex } from "@chakra-ui/react";
+
+
+
 
 function average(arr) {
   return arr.reduce((acc, x) => acc + x, 0) / arr.length;

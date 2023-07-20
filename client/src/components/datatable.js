@@ -18,7 +18,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { format } from "d3-format";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFilter, FaFish, FaSortNumericDown } from "react-icons/fa";
 
 const debounce = (func, delay) => {
@@ -99,7 +99,19 @@ export default function DataTable({
   const [showTooltip1, setShowTooltip1] = useState(false);
   const [showTooltip2, setShowTooltip2] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [ showFisheriesOnly, setShowFisheriesOnly ] = useState(true);
+  const [showFisheriesOnly, setShowFisheriesOnly] = useState(true);
+
+  const [similarityTooltip, setSimilarityTooltip] = useState([0, 0]);
+  const [revenueTooltip, setRevenueTooltip] = useState([0, 0]);
+  const [numNodesTooltip, setNumNodesTooltip] = useState([0, 0]);
+  const [numEdgesTooltip, setNumEdgesTooltip] = useState([0, 0]);
+
+  useEffect(() => {
+    setSimilarityTooltip(networkFilter.similarity);
+    setRevenueTooltip(networkFilter.revenue);
+    setNumNodesTooltip(networkFilter.numNodes);
+    setNumEdgesTooltip(networkFilter.numEdges);
+  }, []);
 
   return (
     <Flex direction="column">
@@ -121,12 +133,12 @@ export default function DataTable({
               <Flex w="full" justify="space-between">
                 <Button
                   mb={2}
-                  variant={networkFilter.sortBy === "fisheries" ? "solid" : "outline"}
+                  variant={
+                    networkFilter.sortBy === "fisheries" ? "solid" : "outline"
+                  }
                   colorScheme="blue"
                   size="xs"
                   onClick={() => {
-                    
-
                     if (networkFilter.sortBy === "fisheries") {
                       setNetworkFilter({
                         ...networkFilter,
@@ -150,11 +162,15 @@ export default function DataTable({
                   colorScheme="blue"
                   size="xs"
                   onClick={() => {
-                    setShowFisheriesOnly(!showFisheriesOnly)
+                    setShowFisheriesOnly(!showFisheriesOnly);
                     setNetworkFilter({
                       ...networkFilter,
-                      fisheries: [1 * !showFisheriesOnly, networkFilter.fisheries[1]],
-                  })}}
+                      fisheries: [
+                        1 * !showFisheriesOnly,
+                        networkFilter.fisheries[1],
+                      ],
+                    });
+                  }}
                 >
                   <Icon as={FaFish} />
                 </Button>
@@ -206,11 +222,32 @@ export default function DataTable({
                     <RangeSlider
                       aria-label="slider-ex-1"
                       defaultValue={networkFilter[selectedFilter]}
+                      value={
+                        selectedFilter === "similarity"
+                          ? similarityTooltip
+                          : selectedFilter === "revenue"
+                          ? revenueTooltip
+                          : selectedFilter === "num_nodes"
+                          ? numNodesTooltip
+                          : numEdgesTooltip
+                      }
                       min={0}
                       max={sliderValues[selectedFilter][2]}
                       step={sliderValues[selectedFilter][2] / 100}
                       onChange={(x) => {
                         // set minSimilarity with debounce
+                        function filter(selectedFilter) {
+                          if (selectedFilter === "similarity") {
+                            return setSimilarityTooltip;
+                          } else if (selectedFilter === "revenue") {
+                            return setRevenueTooltip;
+                          } else if (selectedFilter === "num_nodes") {
+                            return setNumNodesTooltip;
+                          } else if (selectedFilter === "num_links") {
+                            return setNumEdgesTooltip;
+                          }
+                        }
+                        filter(selectedFilter)(x);
                         debounce(
                           setNetworkFilter,
                           650
@@ -233,9 +270,15 @@ export default function DataTable({
                           selectedFilter === "revenue"
                             ? "$.2~s"
                             : selectedFilter === "similarity"
-                              ? ".2~f"
-                              : "d"
-                        )(networkFilter[selectedFilter][0])}
+                            ? ".2~f"
+                            : "d"
+                        )((selectedFilter === "similarity"
+                        ? similarityTooltip
+                        : selectedFilter === "revenue"
+                        ? revenueTooltip
+                        : selectedFilter === "num_nodes"
+                        ? numNodesTooltip
+                        : numEdgesTooltip)[0])}
                       >
                         <RangeSliderThumb
                           index={0}
@@ -253,9 +296,15 @@ export default function DataTable({
                           selectedFilter === "revenue"
                             ? "$.2~s"
                             : selectedFilter === "similarity"
-                              ? ".2~f"
-                              : "d"
-                        )(networkFilter[selectedFilter][1])}
+                            ? ".2~f"
+                            : "d"
+                        )((selectedFilter === "similarity"
+                        ? similarityTooltip
+                        : selectedFilter === "revenue"
+                        ? revenueTooltip
+                        : selectedFilter === "num_nodes"
+                        ? numNodesTooltip
+                        : numEdgesTooltip)[1])}
                       >
                         <RangeSliderThumb
                           index={1}
