@@ -68,7 +68,7 @@ export default function DataTableFilter({ networkFilter, setNetworkFilter }) {
   const [showMaxRevenueTooltip, setShowMaxRevenueTooltip] = useState(false);
 
   return (
-    <Flex align="center" direction="row" justify={"space-between"} pt={4}>
+    <Flex align="center" direction="row" justify={"space-between"} px={3} mb={2}>
       <Flex align="center" gap={2}>
         <FormLabel m="0">Show Fisheries Only</FormLabel>
         <Switch

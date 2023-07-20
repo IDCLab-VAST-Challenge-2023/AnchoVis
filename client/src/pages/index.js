@@ -162,11 +162,16 @@ export default function Home() {
           <Box
             w={"full"}
             p={4}
+            pt={2}
             bgColor={"white"}
             borderRadius={"md"}
             shadow={"sm"}
             overflowX={"hidden"}
           >
+            <DataTableFilter
+              networkFilter={sourceFilter}
+              setNetworkFilter={setSourceFilter}
+            />
             <Box minW={100} h={"77vh"} overflow={"hidden"}>
               {selectedGraph !== null ? (
                 <DetailTable
@@ -178,10 +183,7 @@ export default function Home() {
                 <Center h="full">Please Select the Network</Center>
               )}
             </Box>
-            <DataTableFilter
-              networkFilter={sourceFilter}
-              setNetworkFilter={setSourceFilter}
-            />
+            
           </Box>
         </Flex>
       </Container>
