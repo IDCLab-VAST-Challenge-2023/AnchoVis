@@ -4,16 +4,20 @@ This project is a submission to [Mini-Challenge 3 (MC3)](https://vast-challenge.
 
 <img src="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3/assets/64757426/e31203f8-e578-47bf-bb4e-b959a2d7e222">
 
+## Live Demo
+[Web Demo](https://idclab-vast-challenge-2023.github.io/VAST-Challenge-2023-MC3/)
+
 ## Tools and Libraries
 
-- Python
+- Data Wrangling
   - networkx
   - nltk
   - pandas
   - wordcloud
-  - jupyter notebook
-- Next.js
-  - chart.js
+- Web Interface
+  - Next.js
+  - D3
+  - ChakraUI
 
 ## Challenge Overview
 
