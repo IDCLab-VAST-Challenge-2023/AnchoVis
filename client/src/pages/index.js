@@ -7,6 +7,10 @@ import { useMemo, useState } from "react";
 import { Footer, Header } from "@/components/layout";
 import { Box, Center, Container, Divider, Flex } from "@chakra-ui/react";
 
+function average(arr) {
+  return arr.reduce((acc, x) => acc + x, 0) / arr.length;
+}
+
 Graph.graphs.forEach((x) => {
   x.maxSimilarity = 0;
   x.graph.nodes.forEach((y) => {
@@ -23,12 +27,14 @@ const MIN_SIMILARITY = 0.1;
 const MAX_SIMILARITY = 1.0;
 const MIN_REVENUE = 0;
 const MAX_REVENUE = Graph.graphs.reduce((acc, x) => {
-  if (x.average_revenue > acc) return x.average_revenue;
+  const maxNodeRevenue = Math.max(...x.graph.nodes.map((y) => y.total_revenue));
+  if (maxNodeRevenue > acc) return maxNodeRevenue;
   return acc;
 }, 0);
 const MIN_AVERAGE_REVENUE = 0;
 const MAX_AVERAGE_REVENUE = Graph.graphs.reduce((acc, x) => {
-  if (x.average_revenue > acc) return x.average_revenue;
+  const averageRevenue = average(x.graph.nodes.map((y) => y.total_revenue));
+  if (averageRevenue > acc) return averageRevenue;
   return acc;
 }, 0);
 const MIN_NUM_NODES = 3;
@@ -40,7 +46,6 @@ const MAX_NUM_LINKS = Math.max(
   ...Graph.graphs.map((x) => x.graph.links.length)
 );
 
-
 export const sliderValues = {
   fisheries: [0, MIN_FISHERIES, MAX_FISHERIES],
   similarity: [0, MIN_SIMILARITY, MAX_SIMILARITY],
@@ -48,7 +53,7 @@ export const sliderValues = {
   revenue: [0, MIN_REVENUE, MAX_REVENUE],
   num_nodes: [0, MIN_NUM_NODES, MAX_NUM_NODES],
   num_links: [0, MIN_NUM_LINKS, MAX_NUM_LINKS],
-}
+};
 
 const defaultNetworkFilter = {
   fisheries: [MIN_FISHERIES, MAX_FISHERIES],
@@ -59,7 +64,7 @@ const defaultNetworkFilter = {
   num_links: [MIN_NUM_LINKS, MAX_NUM_LINKS],
   sortBy: "id", // id, fisheries, similarity, revenue, num_nodes, num_links
   sortOrder: "asc", // asc, desc
-}
+};
 // find maxSimilarity and memo to x.maxSimilarity
 
 export default function Home() {
@@ -74,11 +79,8 @@ export default function Home() {
     sortOrder: "asc",
   });
   const resetNetworkFilter = () => {
-    setNetworkFilter(defaultNetworkFilter)
-  }
-
-
-
+    setNetworkFilter(defaultNetworkFilter);
+  };
 
   const graphOverviewData = useMemo(() => {
     const {
@@ -92,26 +94,25 @@ export default function Home() {
       sortOrder,
     } = networkFilter;
     const filteredGraphs = Graph.graphs
-      .filter(
-        (g) => {
-          const {
-            num_ocean_nodes,
-            maxSimilarity,
-            graph: { nodes, links },
-          } = g;
-          return (
-            num_ocean_nodes >= fisheries[0] &&
-            num_ocean_nodes <= fisheries[1] &&
-            maxSimilarity >= similarity[0] &&
-            maxSimilarity <= similarity[1] &&
-            g.average_revenue >= average_revenue[0] &&
-            g.average_revenue <= average_revenue[1] &&
-            nodes.length >= num_nodes[0] &&
-            nodes.length <= num_nodes[1] &&
-            links.length >= num_links[0] &&
-            links.length <= num_links[1])
-        }
-      )
+      .filter((g) => {
+        const {
+          num_ocean_nodes,
+          maxSimilarity,
+          graph: { nodes, links },
+        } = g;
+        return (
+          num_ocean_nodes >= fisheries[0] &&
+          num_ocean_nodes <= fisheries[1] &&
+          maxSimilarity >= similarity[0] &&
+          maxSimilarity <= similarity[1] &&
+          g.average_revenue >= average_revenue[0] &&
+          g.average_revenue <= average_revenue[1] &&
+          nodes.length >= num_nodes[0] &&
+          nodes.length <= num_nodes[1] &&
+          links.length >= num_links[0] &&
+          links.length <= num_links[1]
+        );
+      })
       .sort((a, b) => {
         const sortFunc =
           sortOrder === "asc" ? (x, y) => x - y : (x, y) => y - x;
@@ -167,7 +168,6 @@ export default function Home() {
             overflowX={"hidden"}
           >
             <Box minW={100} h={"77vh"} overflow={"hidden"}>
-              
               {selectedGraph !== null ? (
                 <DetailTable
                   data={Graph.graphs[selectedGraph - 1]}
@@ -179,9 +179,9 @@ export default function Home() {
               )}
             </Box>
             <DataTableFilter
-                networkFilter={sourceFilter}
-                setNetworkFilter={setSourceFilter}
-              />
+              networkFilter={sourceFilter}
+              setNetworkFilter={setSourceFilter}
+            />
           </Box>
         </Flex>
       </Container>
