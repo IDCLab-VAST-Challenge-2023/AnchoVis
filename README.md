@@ -8,7 +8,9 @@ This project is a submission to [Mini-Challenge 3 (MC3)](https://vast-challenge.
 
 ## Live Demo & Video
 [Web Demo](https://idclab-vast-challenge-2023.github.io/AnchoVis/)
-[Presentation Video] (https://youtu.be/fJD1DoLXoLI)
+
+
+[Presentation Video](https://youtu.be/fJD1DoLXoLI)
 
 ---
 
