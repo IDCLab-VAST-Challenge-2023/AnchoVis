@@ -2,14 +2,13 @@
 
 This project is a submission to [Mini-Challenge 3 (MC3)](https://vast-challenge.github.io/2023/MC3.html) of [the Visual Analytics Science and Technology (VAST) Challenge 2023](https://vast-challenge.github.io/2023/index.html).
 
-Live Website: https://idclab-vast-challenge-2023.github.io/AnchoVis/
-Video: https://youtu.be/fJD1DoLXoLI
 <img src="https://github.com/IDCLab-VAST-Challenge-2023/VAST-Challenge-2023-MC3/assets/64757426/e31203f8-e578-47bf-bb4e-b959a2d7e222">
 
 ---
 
-## Live Demo
+## Live Demo & Video
 [Web Demo](https://idclab-vast-challenge-2023.github.io/AnchoVis/)
+[Presentation Video] (https://youtu.be/fJD1DoLXoLI)
 
 ---
 
