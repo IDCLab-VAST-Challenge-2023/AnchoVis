@@ -31,7 +31,7 @@ const Header = () => {
 
 const Footer = () => {
   return (
-    <Flex>
+    <Flex style={{ position: "fixed", bottom: 0, left: 0 }}>
       <Flex
         mt="auto"
         align={"center"}
@@ -39,7 +39,6 @@ const Footer = () => {
         px={4}
         flexDir="column"
         alignItems="start"
-        style={{position: "fixed", bottom: 0, left: 0}}
       >
         <Link href="https://idclab.skku.edu" isExternal>
           <Flex>
