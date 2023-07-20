@@ -34,7 +34,7 @@ Therefore, we propose _<strong>AnchoVIS</strong>_, a visualization tool, instead
 
 ## Authors
 
-- Myeongwon Jung
-- Donghee Hong
-- Seonghyeon Cho
-- Jiwon Choi
+- [Myeongwon Jung](https://github.com/jjjmmwon)
+- [Donghee Hong](https://github.com/sth39)
+- [Seonghyeon Cho](https://github.com/st42597)
+- [Jiwon Choi](https://git.jasonchoi.dev)
