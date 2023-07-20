@@ -41,6 +41,8 @@ Therefore, we propose _<strong>AnchoVIS</strong>_, a visualization tool, instead
   - D3
   - ChakraUI
 
+--- 
+
 ## Authors
 
 - [Myeongwon Jung](https://github.com/jjmmwon)
